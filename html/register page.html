@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f5f5f5;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 380px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card login-card shadow-sm p-4">
+    <h3 class="mb-4 text-center">Create Account</h3>
+    <form id="registerForm">
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" placeholder="Your name" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="email" placeholder="you@example.com" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="Password" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 mb-2">Register</button>
+
+        <hr class="my-3">
+
+        <div class="d-grid gap-2">
+            <button type="button" class="btn btn-outline-secondary" id="loginBtn">Back to Login</button>
+            <button type="button" class="btn btn-outline-dark" id="anonymousBtn">Continue as Anonymous</button>
+        </div>
+    </form>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        alert('Registration attempted for: ' + name + ' (' + email + ')');
+    });
+
+    document.getElementById('loginBtn').addEventListener('click', function () {
+        alert('Navigate back to login page');
+    });
+
+    document.getElementById('anonymousBtn').addEventListener('click', function () {
+        alert('Continuing as anonymous user');
+    });
+</script>
+</body>
+</html>
