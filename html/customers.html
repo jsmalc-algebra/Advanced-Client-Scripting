@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customers</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      min-height: 100vh;
+      background-color: #f5f5f5;
+      padding: 2rem 1rem;
+    }
+    .table-card {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    th.sortable {
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+    th.sortable:hover {
+      background-color: #eaeaea;
+    }
+    .sort-icon {
+      font-size: 0.75rem;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card table-card shadow-sm p-4">
+    <h3 class="mb-4">Users</h3>
+
+    <div class="row g-2 align-items-end mb-4">
+      <div class="col-12 col-md-4">
+        <label for="searchInput" class="form-label small text-muted mb-1">Search</label>
+        <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="Name, email, city...">
+      </div>
+
+      <div class="col-6 col-md-3 ms-md-auto">
+        <label for="pageSize" class="form-label small text-muted mb-1">Rows per page</label>
+        <select id="pageSize" class="form-select form-select-sm">
+          <option value="10" selected>10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th scope="col" class="sortable" data-sort="name">Name <span class="sort-icon">↕</span></th>
+            <th scope="col" class="sortable" data-sort="lastName">Last Name <span class="sort-icon">↕</span></th>
+            <th scope="col" class="sortable" data-sort="email">Email <span class="sort-icon">↕</span></th>
+            <th scope="col" class="sortable" data-sort="phone">Phone <span class="sort-icon">↕</span></th>
+            <th scope="col" class="sortable" data-sort="city">City <span class="sort-icon">↕</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>John</td>
+            <td>Doe</td>
+            <td>john.doe@example.com</td>
+            <td>+1 555-123-4567</td>
+            <td>New York</td>
+          </tr>
+          <tr>
+            <td>Jane</td>
+            <td>Smith</td>
+            <td>jane.smith@example.com</td>
+            <td>+1 555-987-6543</td>
+            <td>Los Angeles</td>
+          </tr>
+          <tr>
+            <td>Ivan</td>
+            <td>Horvat</td>
+            <td>ivan.horvat@example.com</td>
+            <td>+385 91 234 5678</td>
+            <td>Split</td>
+          </tr>
+          <tr>
+            <td>Maria</td>
+            <td>Garcia</td>
+            <td>maria.garcia@example.com</td>
+            <td>+1 555-321-7654</td>
+            <td>Miami</td>
+          </tr>
+          <tr>
+            <td>Alex</td>
+            <td>Johnson</td>
+            <td>alex.johnson@example.com</td>
+            <td>+1 555-456-1122</td>
+            <td>Chicago</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination template (static for now - backend handles actual pagination) -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <span class="small text-muted">Showing 1–5 of 5</span>
+      <nav aria-label="Users pagination">
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item disabled">
+            <span class="page-link">Prev</span>
+          </li>
+          <li class="page-item active">
+            <span class="page-link">1</span>
+          </li>
+          <li class="page-item disabled">
+            <span class="page-link">Next</span>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
