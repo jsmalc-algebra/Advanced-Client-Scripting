@@ -67,7 +67,9 @@ function makeCustomerArray(data_customers,data_cities) {
 function sortCustomersByCity(customers) {
     return customers.sort(function (a, b) {
        var result = a.city.localeCompare(b.city);
-       return state.sortOrder === 'desc' ? -result : result;
+       if (state.sortOrder === 'desc') {
+           return -result;
+       } else {return result;}
     });
 }
 
@@ -92,11 +94,55 @@ function populateCustomerTable(customers) {
     })
 }
 
+async function populatePaginationNav() {
+    const pagination_nav = document.getElementById('pagination')
+
+    const response = await fetch('http://localhost:3000/Customer?_start=20&_end=30');
+    const total_count = Number(response.headers.get('x-total-count'));
+    const page_num = Math.ceil(total_count / state.limit);
+
+    const page_numbers = [];
+    page_numbers.push(1)
+    if (state.page > 2) {page_numbers.push(state.page -1)}
+    if (state.page !== 1) {page_numbers.push(state.page)}
+    if (state.page !== page_num && state.page +1 !== page_num) {page_numbers.push(state.page+1)}
+    page_numbers.push(page_num);
+
+    pagination_nav.innerHTML = `
+        <li class="page-item ${state.page === 1 ? "disabled" : ""}" id="prev-page">
+            <button class="page-link" type="button" aria-label="Previous page">
+              Prev
+            </button>
+        </li>
+    `
+
+    page_numbers.forEach((page_number) => {
+        const li = document.createElement('li');
+
+        li.className="page-item page-number";
+        if (page_number === state.page) {li.classList.add('active');}
+
+        li.innerHTML = `<button class="page-link" type="button" data-page="${page_number}">${page_number}</button>`;
+
+        pagination_nav.appendChild(li);
+    })
+
+    pagination_nav.insertAdjacentHTML('beforeend', `
+    <li class="page-item ${state.page === page_num ? "disabled" : ""}" id="next-page">
+        <button class="page-link" type="button" aria-label="Next page">
+            Next
+        </button>
+    </li>
+    `);
+}
+
 async function pageChange() {
     let data_customers = await getAllCustomers();
     let data_cities = await getAllCities();
     let customers = makeCustomerArray(data_customers, data_cities);
+    if (state.sortBy === 'City') {sortCustomersByCity(customers)}
     populateCustomerTable(customers);
+    await populatePaginationNav();
 }
 
 page_limiter.addEventListener('change', (event) => {
