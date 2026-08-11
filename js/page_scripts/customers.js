@@ -1,13 +1,15 @@
 import Customer from '../entities/Customer.js'
 
 let state = {
-    page: 1,
+    curr_page: 1,
     limit: 10,
     sortBy: null,
     sortOrder: 'asc',
+    max_page: 20
 }
 
 const page_limiter = document.getElementById('pageSize')
+const pagination_nav = document.getElementById('pagination')
 
 async function getAllCities() {
     const response = await fetch('http://localhost:3000/City');
@@ -16,7 +18,7 @@ async function getAllCities() {
 
 async function getAllCustomers() {
     const params = new URLSearchParams({
-        '_page': state.page.toString(),
+        '_page': state.curr_page.toString(),
         '_limit': state.limit.toString()
     });
 
@@ -94,22 +96,25 @@ function populateCustomerTable(customers) {
     })
 }
 
-async function populatePaginationNav() {
-    const pagination_nav = document.getElementById('pagination')
-
+async function calculateMaxPage() {
     const response = await fetch('http://localhost:3000/Customer?_start=20&_end=30');
     const total_count = Number(response.headers.get('x-total-count'));
-    const page_num = Math.ceil(total_count / state.limit);
+    state.max_page = Math.ceil(total_count / state.limit);
 
+    if (state.curr_page > state.max_page) {state.curr_page=1}
+}
+
+function populatePaginationNav() {
+    const max_page = state.max_page;
     const page_numbers = [];
     page_numbers.push(1)
-    if (state.page > 2) {page_numbers.push(state.page -1)}
-    if (state.page !== 1) {page_numbers.push(state.page)}
-    if (state.page !== page_num && state.page +1 !== page_num) {page_numbers.push(state.page+1)}
-    page_numbers.push(page_num);
+    if (state.curr_page > 2) {page_numbers.push(state.curr_page -1)}
+    if (state.curr_page !== 1) {page_numbers.push(state.curr_page)}
+    if (state.curr_page !== max_page && state.curr_page +1 !== max_page) {page_numbers.push(state.curr_page+1)}
+    if (max_page !== 1 && state.curr_page !== max_page) {page_numbers.push(max_page)}
 
     pagination_nav.innerHTML = `
-        <li class="page-item ${state.page === 1 ? "disabled" : ""}" id="prev-page">
+        <li class="page-item ${state.curr_page === 1 ? "disabled" : ""}" id="prev-page">
             <button class="page-link" type="button" aria-label="Previous page">
               Prev
             </button>
@@ -120,7 +125,7 @@ async function populatePaginationNav() {
         const li = document.createElement('li');
 
         li.className="page-item page-number";
-        if (page_number === state.page) {li.classList.add('active');}
+        if (page_number === state.curr_page) {li.classList.add('active');}
 
         li.innerHTML = `<button class="page-link" type="button" data-page="${page_number}">${page_number}</button>`;
 
@@ -128,7 +133,7 @@ async function populatePaginationNav() {
     })
 
     pagination_nav.insertAdjacentHTML('beforeend', `
-    <li class="page-item ${state.page === page_num ? "disabled" : ""}" id="next-page">
+    <li class="page-item ${state.curr_page === max_page ? "disabled" : ""}" id="next-page">
         <button class="page-link" type="button" aria-label="Next page">
             Next
         </button>
@@ -137,20 +142,33 @@ async function populatePaginationNav() {
 }
 
 async function pageChange() {
+    await calculateMaxPage();
     let data_customers = await getAllCustomers();
     let data_cities = await getAllCities();
     let customers = makeCustomerArray(data_customers, data_cities);
-    if (state.sortBy === 'City') {sortCustomersByCity(customers)}
+    if (state.sortBy === 'City') {sortCustomersByCity(customers)} // Uses ES5 code
     populateCustomerTable(customers);
-    await populatePaginationNav();
+    populatePaginationNav();
 }
 
 page_limiter.addEventListener('change', (event) => {
     state.limit = event.target.value;
-    console.log(event.target.value);
     pageChange()
         .catch(error => console.error(error));
 })
+
+pagination_nav.addEventListener('click', (event) => {
+    const pageButton = event.target.closest('[data-page]');
+
+    if (pageButton) {state.curr_page = Number(pageButton.dataset.page);}
+
+    if (event.target.closest('#prev-page')) {state.curr_page = state.curr_page - 1}
+
+    if (event.target.closest('#next-page')) {state.curr_page = state.curr_page + 1}
+
+    pageChange()
+        .catch(error => console.error(error));
+});
 
 pageChange()
     .catch(error => console.error(error));
