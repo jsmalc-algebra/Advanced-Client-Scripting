@@ -28,11 +28,12 @@
       color: #999;
     }
   </style>
+  <script type="module" src="../js/page_scripts/customers.js" defer></script>
 </head>
 <body>
 
   <div class="card table-card shadow-sm p-4">
-    <h3 class="mb-4">Users</h3>
+    <h3 class="mb-4">Customers</h3>
 
     <div class="row g-2 align-items-end mb-4">
       <div class="col-12 col-md-4">
@@ -61,49 +62,13 @@
             <th scope="col" class="sortable" data-sort="city">City <span class="sort-icon">↕</span></th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>John</td>
-            <td>Doe</td>
-            <td>john.doe@example.com</td>
-            <td>+1 555-123-4567</td>
-            <td>New York</td>
-          </tr>
-          <tr>
-            <td>Jane</td>
-            <td>Smith</td>
-            <td>jane.smith@example.com</td>
-            <td>+1 555-987-6543</td>
-            <td>Los Angeles</td>
-          </tr>
-          <tr>
-            <td>Ivan</td>
-            <td>Horvat</td>
-            <td>ivan.horvat@example.com</td>
-            <td>+385 91 234 5678</td>
-            <td>Split</td>
-          </tr>
-          <tr>
-            <td>Maria</td>
-            <td>Garcia</td>
-            <td>maria.garcia@example.com</td>
-            <td>+1 555-321-7654</td>
-            <td>Miami</td>
-          </tr>
-          <tr>
-            <td>Alex</td>
-            <td>Johnson</td>
-            <td>alex.johnson@example.com</td>
-            <td>+1 555-456-1122</td>
-            <td>Chicago</td>
-          </tr>
+        <tbody id="table-body">
+
         </tbody>
       </table>
     </div>
 
-    <!-- Pagination template (static for now - backend handles actual pagination) -->
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-      <span class="small text-muted">Showing 1–5 of 5</span>
       <nav aria-label="Users pagination">
         <ul class="pagination pagination-sm mb-0">
           <li class="page-item disabled">
