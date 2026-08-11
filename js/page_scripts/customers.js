@@ -7,6 +7,8 @@ let state = {
     sortOrder: 'asc',
 }
 
+const page_limiter = document.getElementById('pageSize')
+
 async function getAllCities() {
     const response = await fetch('http://localhost:3000/City');
     return await response.json();
@@ -18,12 +20,14 @@ async function getAllCustomers() {
         '_limit': state.limit.toString()
     });
 
-    if (state.sortBy) {
+    if (state.sortBy && state.sortBy !== 'City') {
         params.append('_sort',state.sortBy)
         params.append('_order', state.sortOrder)
     }
 
-    const response = await fetch(`http://localhost:3000/Customer?${params}`);
+    const response = await fetch(`http://localhost:3000/Customer?${params}`); // Technically a template literal
+    console.log(params)
+    console.log(response)
     return await response.json()
 }
 
@@ -57,30 +61,48 @@ function makeCustomerArray(data_customers,data_cities) {
     return customers;
 }
 
+// ES5 CODE, purposefully not using let or arrow functions
+function sortCustomersByCity(customers) {
+    return customers.sort(function (a, b) {
+       var result = a.city.localeCompare(b.city);
+       return state.sortOrder === 'desc' ? -result : result;
+    });
+}
+
 function populateCustomerTable(customers) {
     const tbody = document.getElementById('table-body')
+
+    tbody.innerHTML = "";
 
     customers.forEach((customer) => {
         const row = document.createElement('tr');
 
-        row.innerHTML =
-            "<td>" + customer.name + "</td>" +
-            "<td>" + customer.lastName + "</td>" +
-            "<td>" + customer.email + "</td>" +
-            "<td>" + customer.phoneNumber + "</td>" +
-            "<td>" + customer.city + "</td>";
+        row.innerHTML = ` 
+             <td>${customer.name}</td> 
+             <td>${customer.lastName}</td> 
+             <td>${customer.email}</td> 
+             <td>${customer.phoneNumber}</td> 
+             <td>${customer.city}</td> 
+        `; //More template literals
 
         tbody.appendChild(row);
 
     })
 }
 
-async function initPage() {
+async function pageChange() {
     let data_customers = await getAllCustomers();
     let data_cities = await getAllCities();
     let customers = makeCustomerArray(data_customers, data_cities);
     populateCustomerTable(customers);
 }
 
-initPage()
+page_limiter.addEventListener('change', (event) => {
+    state.limit = event.target.value;
+    console.log(event.target.value);
+    pageChange()
+        .catch(error => console.error(error));
+})
+
+pageChange()
     .catch(error => console.error(error));
