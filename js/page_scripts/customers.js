@@ -45,6 +45,8 @@ function makeCustomerArray(data_customers,data_cities) {
 
         if (city) {
             city = data_cities.find(city_entity => city_entity.id === city).name;
+        } else {
+            city = "";
         }
 
         customers.push(
