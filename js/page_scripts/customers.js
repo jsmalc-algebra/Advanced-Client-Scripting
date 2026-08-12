@@ -4,12 +4,13 @@ let state = {
     curr_page: 1,
     limit: 10,
     sortBy: null,
-    sortOrder: 'asc',
+    sortOrder: null,
     max_page: 20
 }
 
 const page_limiter = document.getElementById('pageSize')
 const pagination_nav = document.getElementById('pagination')
+const sorting_head = document.getElementById('sorting-head')
 
 async function getAllCities() {
     const response = await fetch('http://localhost:3000/City');
@@ -22,14 +23,18 @@ async function getAllCustomers() {
         '_limit': state.limit.toString()
     });
 
-    if (state.sortBy && state.sortBy !== 'City') {
+    if (state.sortBy && state.sortBy !== 'city') {
         params.append('_sort',state.sortBy)
         params.append('_order', state.sortOrder)
     }
 
-    const response = await fetch(`http://localhost:3000/Customer?${params}`); // Technically a template literal
-    console.log(params)
-    console.log(response)
+    let response;
+    if (state.sortBy !== 'city') {
+        response = await fetch(`http://localhost:3000/Customer?${params}`); // Technically a template literal
+        console.log(params)
+        console.log(response)
+    }
+    else {response = await fetch(`http://localhost:3000/Customer`)}
     return await response.json()
 }
 
@@ -141,12 +146,22 @@ function populatePaginationNav() {
     `);
 }
 
+// ES5 CODE, purposefully using var
+function paginateCustomersArray(customers) {
+    var start = (state.curr_page - 1) * state.limit;
+    var end = start+state.limit;
+    return customers.slice(start, end);
+}
+
 async function pageChange() {
     await calculateMaxPage();
     let data_customers = await getAllCustomers();
     let data_cities = await getAllCities();
     let customers = makeCustomerArray(data_customers, data_cities);
-    if (state.sortBy === 'City') {sortCustomersByCity(customers)} // Uses ES5 code
+    if (state.sortBy === 'city') {
+        customers = sortCustomersByCity(customers)
+        customers = paginateCustomersArray(customers)
+    } // Uses ES5 code
     populateCustomerTable(customers);
     populatePaginationNav();
 }
@@ -169,6 +184,21 @@ pagination_nav.addEventListener('click', (event) => {
     pageChange()
         .catch(error => console.error(error));
 });
+
+sorting_head.addEventListener('click', (event) => {
+    const categoryHeader = event.target.closest('[data-sort]');
+
+    if (state.sortBy !== categoryHeader.dataset.sort) {
+        state.sortOrder = null;
+        state.sortBy = categoryHeader.dataset.sort;
+    }
+
+    if (state.sortOrder === null || state.sortOrder === 'desc') {state.sortOrder = 'asc'}
+    else {state.sortOrder = 'desc'}
+
+    pageChange()
+        .catch(error => console.error(error));
+})
 
 pageChange()
     .catch(error => console.error(error));
