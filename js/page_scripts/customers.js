@@ -5,12 +5,14 @@ let state = {
     limit: 10,
     sortBy: null,
     sortOrder: null,
+    searchString: null,
     max_page: 20
 }
 
 const page_limiter = document.getElementById('pageSize')
 const pagination_nav = document.getElementById('pagination')
 const sorting_head = document.getElementById('sorting-head')
+const search_button = document.getElementById('search-button')
 
 async function getAllCities() {
     const response = await fetch('http://localhost:3000/City');
@@ -29,7 +31,7 @@ async function getAllCustomers() {
     }
 
     let response;
-    if (state.sortBy !== 'city') {
+    if (state.sortBy !== 'city' && state.searchString === null) {
         response = await fetch(`http://localhost:3000/Customer?${params}`); // Technically a template literal
         console.log(params)
         console.log(response)
@@ -157,7 +159,18 @@ function paginateCustomersArray(customers) {
     return customers.slice(start, end);
 }
 
+async function searchCustomerInfo() {
+    let response = await fetch(`http://localhost:3000/Customer?q=${state.searchString}`);
+    const customer_data = await response.json();
+
+    response = await fetch(`http://localhost:3000/City?q=${state.searchString}`);
+    const cities_data = await response.json();
+
+    return [customer_data, cities_data];
+}
+
 async function pageChange() {
+    state.searchString = null;
     await calculateMaxPage();
     let data_customers = await getAllCustomers();
     let data_cities = await getAllCities();
@@ -168,6 +181,11 @@ async function pageChange() {
     } // Uses ES5 code
     populateCustomerTable(customers);
     populatePaginationNav();
+}
+
+async function searchPageChange() {
+    let all_customer_data = await getAllCustomers();
+    let all_city_data = await getAllCities();
 }
 
 page_limiter.addEventListener('change', (event) => {
@@ -202,6 +220,12 @@ sorting_head.addEventListener('click', (event) => {
 
     pageChange()
         .catch(error => console.error(error));
+})
+
+search_button.addEventListener('click', (event) => {
+    state.searchString = document.getElementById('searchInput').value
+    searchPageChange()
+         .catch(error => console.error(error));
 })
 
 pageChange()

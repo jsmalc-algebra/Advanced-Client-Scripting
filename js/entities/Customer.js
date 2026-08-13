@@ -1,5 +1,6 @@
 export default class Customer {
-    constructor(name, lastName, email, phoneNumber, city) {
+    constructor(id,name, lastName, email, phoneNumber, city) {
+        this.id = id;
         this.name = name;
         this.lastName = lastName;
         this.email = email;
