@@ -44,11 +44,15 @@ function makeCustomerArray(data_customers,data_cities) {
     for (let i = 0; i < data_customers.length; i += 1) {
         let customer_data = data_customers[i]
 
-        let name = customer_data.name;
-        let surname = customer_data.surname;
-        let email = customer_data.email;
-        let phoneNumber = customer_data.telephone;
-        let city = customer_data.cityId;
+
+        // Destructuring
+        let {
+            name,
+            surname,
+            email,
+            telephone: phoneNumber,
+            cityId: city
+        } = customer_data
 
         if (city) {
             city = data_cities.find(city_entity => city_entity.id === city).name;
@@ -157,7 +161,7 @@ async function pageChange() {
     await calculateMaxPage();
     let data_customers = await getAllCustomers();
     let data_cities = await getAllCities();
-    let customers = makeCustomerArray(data_customers, data_cities);
+    let customers = makeCustomerArray(data_customers, data_cities); // Uses destructuring
     if (state.sortBy === 'city') {
         customers = sortCustomersByCity(customers)
         customers = paginateCustomersArray(customers)
