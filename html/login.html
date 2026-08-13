@@ -18,6 +18,7 @@
             max-width: 380px;
         }
     </style>
+    <script src="../js/page_scripts/login.js" defer></script>
 </head>
 <body>
 
@@ -38,26 +39,11 @@
 
         <div class="d-grid gap-2">
             <a href="register%20page.html" class="btn btn-outline-secondary w-100">Register</a>
-            <button type="button" class="btn btn-outline-dark" id="anonymousBtn">Continue as Anonymous</button>
+            <a href="customers.html" type="button" class="btn btn-outline-dark" id="anonymousBtn">Continue as Anonymous</a>
         </div>
     </form>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
-<script>
-    document.getElementById('loginForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        const email = document.getElementById('email').value;
-        alert('Login attempted with: ' + email);
-    });
-
-    document.getElementById('registerBtn').addEventListener('click', function () {
-        alert('Register clicked');
-    });
-
-    document.getElementById('anonymousBtn').addEventListener('click', function () {
-        alert('Continuing as anonymous user');
-    });
-</script>
 </body>
 </html>
