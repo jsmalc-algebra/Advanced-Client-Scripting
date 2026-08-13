@@ -6,13 +6,15 @@ let state = {
     sortBy: null,
     sortOrder: null,
     searchString: null,
-    max_page: 20
+    maxPage: 20,
+    searchMode : false
 }
 
 const page_limiter = document.getElementById('pageSize')
 const pagination_nav = document.getElementById('pagination')
 const sorting_head = document.getElementById('sorting-head')
 const search_button = document.getElementById('search-button')
+const clear_button = document.getElementById('clear-button')
 
 async function getAllCities() {
     const response = await fetch('http://localhost:3000/City');
@@ -31,7 +33,7 @@ async function getAllCustomers() {
     }
 
     let response;
-    if (state.sortBy !== 'city' && state.searchString === null) {
+    if (state.sortBy !== 'city' && state.searchMode === false) {
         response = await fetch(`http://localhost:3000/Customer?${params}`); // Technically a template literal
         console.log(params)
         console.log(response)
@@ -49,6 +51,7 @@ function makeCustomerArray(data_customers,data_cities) {
 
         // Destructuring
         let {
+            id,
             name,
             surname,
             email,
@@ -57,13 +60,17 @@ function makeCustomerArray(data_customers,data_cities) {
         } = customer_data
 
         if (city) {
-            city = data_cities.find(city_entity => city_entity.id === city).name;
+            let city_data = data_cities.find(city_entity => city_entity.id === city);
+
+            if (city_data === undefined) {city = ""}
+            else {city = city_data.name}
         } else {
             city = "";
         }
 
         customers.push(
             new Customer(
+                id,
                 name,
                 surname,
                 email,
@@ -110,13 +117,13 @@ function populateCustomerTable(customers) {
 async function calculateMaxPage() {
     const response = await fetch('http://localhost:3000/Customer?_start=20&_end=30');
     const total_count = Number(response.headers.get('x-total-count'));
-    state.max_page = Math.ceil(total_count / state.limit);
+    state.maxPage = Math.ceil(total_count / state.limit);
 
-    if (state.curr_page > state.max_page) {state.curr_page=1}
+    if (state.curr_page > state.maxPage) {state.curr_page=1}
 }
 
 function populatePaginationNav() {
-    const max_page = state.max_page;
+    const max_page = state.maxPage;
     const page_numbers = [];
     page_numbers.push(1)
     if (state.curr_page > 2) {page_numbers.push(state.curr_page -1)}
@@ -169,8 +176,31 @@ async function searchCustomerInfo() {
     return [customer_data, cities_data];
 }
 
+async function getSearchedCustomers() {
+    const all_customer_data = await getAllCustomers();
+    const all_city_data = await getAllCities();
+    const searchData = await searchCustomerInfo();
+
+    const customer_search_data = searchData[0];
+    const city_search_data = searchData[1];
+
+    const customer_array_1 = makeCustomerArray(customer_search_data, all_city_data);
+
+    let customer_array_2;
+    if (city_search_data.length) {
+         customer_array_2 =
+            makeCustomerArray(all_customer_data, city_search_data)
+                .filter(customer => customer.city !== "")
+                .filter(
+                    customer => !customer_array_1
+                        .some(existingCustomer => existingCustomer.id === customer.id)
+                )
+    } else { customer_array_2 = [] }
+
+    return [...customer_array_1, ...customer_array_2];
+}
+
 async function pageChange() {
-    state.searchString = null;
     await calculateMaxPage();
     let data_customers = await getAllCustomers();
     let data_cities = await getAllCities();
@@ -184,14 +214,22 @@ async function pageChange() {
 }
 
 async function searchPageChange() {
-    let all_customer_data = await getAllCustomers();
-    let all_city_data = await getAllCities();
+    let searched_customers = await getSearchedCustomers();
+    state.maxPage = Math.ceil(searched_customers.length / state.limit);
+    searched_customers = paginateCustomersArray(searched_customers);
+    populateCustomerTable(searched_customers);
+    populatePaginationNav();
 }
 
 page_limiter.addEventListener('change', (event) => {
     state.limit = event.target.value;
-    pageChange()
-        .catch(error => console.error(error));
+    if (!state.searchMode) {
+        pageChange()
+            .catch(error => console.error(error));
+    } else {
+        searchPageChange()
+            .catch(error => console.error(error));
+    }
 })
 
 pagination_nav.addEventListener('click', (event) => {
@@ -203,11 +241,18 @@ pagination_nav.addEventListener('click', (event) => {
 
     if (event.target.closest('#next-page')) {state.curr_page = state.curr_page + 1}
 
-    pageChange()
-        .catch(error => console.error(error));
+    if (!state.searchMode) {
+        pageChange()
+            .catch(error => console.error(error));
+    } else {
+        searchPageChange()
+            .catch(error => console.error(error));
+    }
 });
 
 sorting_head.addEventListener('click', (event) => {
+    if(state.searchMode) {return;}
+
     const categoryHeader = event.target.closest('[data-sort]');
 
     if (state.sortBy !== categoryHeader.dataset.sort) {
@@ -223,9 +268,21 @@ sorting_head.addEventListener('click', (event) => {
 })
 
 search_button.addEventListener('click', (event) => {
-    state.searchString = document.getElementById('searchInput').value
+    state.searchString = document.getElementById('searchInput').value;
+    state.curr_page = 1;
+    state.searchMode = true
+    state.sortOrder = null
     searchPageChange()
          .catch(error => console.error(error));
+})
+
+clear_button.addEventListener('click', (event) => {
+    document.getElementById('searchInput').value = ''
+    state.searchString = null
+    state.curr_page = 1;
+    state.searchMode = false
+    pageChange()
+        .catch(error => console.error(error));
 })
 
 pageChange()
