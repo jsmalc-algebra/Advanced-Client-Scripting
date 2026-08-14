@@ -44,5 +44,10 @@ async function userLogin() {
 document.querySelector("#loginForm").addEventListener("submit",  event => {
     event.preventDefault();
     userLogin()
-        .catch(error => {console.error(error)});
+        .catch(error => {
+            if (error.message === 'Login failed.') {
+                alert("Login failed. Please try again.");
+            }
+            else {console.error(error);}
+        });
 })
