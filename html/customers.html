@@ -28,6 +28,19 @@
       font-size: 0.75rem;
       color: #999;
     }
+    @media (max-width: 767px) {
+      #table-body, table, thead, tbody, th, td, tr { display: block; }
+      thead tr { position: absolute; top: -9999px; left: -9999px; }
+      tr { margin-bottom: 0.75rem; border: 1px solid #ddd; border-radius: 6px; padding: 0.5rem; }
+      td {
+        display: flex; justify-content: space-between;
+        padding: 0.4rem 0.25rem; border: none;
+      }
+      td::before {
+        content: attr(data-label);
+        font-weight: 600; color: #666;
+      }
+    }
   </style>
   <script type="module" src="../js/page_scripts/customers.js" defer></script>
   <script src="../js/general%20functions.js" defer></script>
