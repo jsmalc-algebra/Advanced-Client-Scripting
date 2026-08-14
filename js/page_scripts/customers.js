@@ -109,7 +109,14 @@ function populateCustomerTable(customers) {
              <td>${customer.city}</td> 
         `; //More template literals
 
+        if (localStorage.getItem("user")) {
+            const td = document.createElement('td');
+            td.innerHTML = '<a href="#">REPLACE WITH DETAILS FAVICON</a>'
+            row.appendChild(td);
+        }
+
         tbody.appendChild(row);
+
 
     })
 }
@@ -221,6 +228,14 @@ async function searchPageChange() {
     populatePaginationNav();
 }
 
+function addViewDetailsColumn() {
+    const th = document.createElement('th');
+    th.textContent = 'Details';
+
+    const tr = document.getElementById('table-head-row');
+    tr.appendChild(th);
+}
+
 page_limiter.addEventListener('change', (event) => {
     state.limit = event.target.value;
     if (!state.searchMode) {
@@ -285,5 +300,6 @@ clear_button.addEventListener('click', (event) => {
         .catch(error => console.error(error));
 })
 
+if (localStorage.getItem("user")) {addViewDetailsColumn()}
 pageChange()
     .catch(error => console.error(error));
