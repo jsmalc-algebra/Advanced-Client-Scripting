@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Customer</title>
+    <title>Edit Customer</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -18,7 +18,7 @@
             width: 100%;
         }
     </style>
-    <script src="../js/page_scripts/add_customer.js" type="module" defer></script>
+    <script src="../js/page_scripts/edit_customer.js" type="module" defer></script>
     <script type="module" src="../js/page_scripts/navbar_functions.js" defer></script>
 </head>
 <body>
@@ -51,8 +51,12 @@
         </div>
     </nav>
 
-    <h3 class="mb-4 text-center">Add Customer</h3>
-    <form id="addCustomerForm">
+    <h3 class="mb-4 text-center">Edit Customer</h3>
+    <form id="editCustomerForm">
+        <div class="mb-3">
+            <label for="id" class="form-label">ID</label>
+            <input type="text" class="form-control" id="id" disabled>
+        </div>
         <div class="mb-3">
             <label for="firstName" class="form-label">Name</label>
             <input type="text" class="form-control" id="firstName" placeholder="First name" required>
@@ -75,7 +79,7 @@
 
             </select>
         </div>
-        <button type="submit" class="btn btn-primary w-100 mb-2">Add Customer</button>
+        <button type="submit" class="btn btn-warning w-100 mb-2">Edit Customer</button>
     </form>
 </div>
 

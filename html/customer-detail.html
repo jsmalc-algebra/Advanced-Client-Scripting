@@ -34,7 +34,8 @@
     }
   </style>
   <script type="module" src="../js/page_scripts/customer_details.js" defer></script>
-  <script src="../js/general%20functions.js" defer></script>
+  <script type="module" src="../js/page_scripts/navbar_functions.js" defer></script>
+  <script type="module" src="../js/reusable-functions.js" defer></script>
 </head>
 <body>
 
@@ -91,9 +92,8 @@
 
     <hr class="my-4">
 
-    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-      <a href="edit-customer.html" type="button" class="btn btn-outline-primary" id="editBtn">Edit</a>
-      <a href="#" type="button" class="btn btn-outline-danger" id="deleteBtn">Delete</a>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end" id="button-links">
+
     </div>
 
   </div>

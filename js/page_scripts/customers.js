@@ -1,4 +1,5 @@
 import Customer from '../entities/Customer.js'
+import {getAllCities} from "../reusable-functions.js";
 
 let state = {
     curr_page: 1,
@@ -15,11 +16,6 @@ const pagination_nav = document.getElementById('pagination')
 const sorting_head = document.getElementById('sorting-head')
 const search_button = document.getElementById('search-button')
 const clear_button = document.getElementById('clear-button')
-
-export async function getAllCities() {
-    const response = await fetch('http://localhost:3000/City');
-    return await response.json();
-}
 
 async function getAllCustomers() {
     const params = new URLSearchParams({

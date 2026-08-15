@@ -1,34 +1,33 @@
-import {getAllCities} from "./customers"
+import {getAllCities} from "../reusable-functions.js"
 
 const citySelect = document.getElementById('city');
 
 async function populateCityDropdown(){
     const city_response = await getAllCities();
 
+    const option = document.createElement("option");
+    option.value = null;
+    option.text = "null - None"
+    citySelect.appendChild(option);
+
     city_response.forEach(city =>{
         const option = document.createElement("option");
-        option.value = city;
-        option.textContent = city;
+        option.value = city.id;
+        option.textContent = `${city.id} - ${city.name}`;
         citySelect.appendChild(option);
     });
 }
 
-async function findCityByNameAndReturnId(name){
-    const response = await fetch(`http://localhost:3000/City/?name=${name}`);
-    const data = await response.json();
-    return data.id;
-}
-
-async function makeNewCustomer(name,last_name,email,phone,city_name){
-    const city_id = await findCityByNameAndReturnId(city_name);
+async function makeNewCustomer(){
     const params ={
-        'name': name,
-        'surname': last_name,
-        'email': email,
-        'telephone': phone,
-        'cityId': city_id,
+        'name': document.getElementById('firstName').value,
+        'surname': document.getElementById('lastName').value,
+        'email': document.getElementById('email').value,
+        'telephone': document.getElementById('phone').value,
+        'cityId': document.getElementById('city').value,
     }
-    const response = await fetch(`http://localhost:3000/Customer?`,{
+    console.log(params);
+    const response = await fetch(`http://localhost:3000/Customer`,{
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -37,16 +36,26 @@ async function makeNewCustomer(name,last_name,email,phone,city_name){
         body: JSON.stringify(params),
     });
 
-    const data = await response.json();
-    const id = data.id;
+    if (response.ok){
+        const data = await response.json();
+        const id = data.id;
+        window.location.href = "customer-detail.html?id=" + id;
+    } else {
+        throw new Error('Adding failed.');
+    }
 
-    window.location.href = "customer-detail.html?id=" + id;
+
+
+
 }
 
 document.querySelector("#addCustomerForm").addEventListener("submit", async event => {
     event.preventDefault();
     makeNewCustomer().catch(
-        error => {console.error(error)}
+        error => {
+            if (error.message === 'Adding failed.') {alert('Adding failed. Contact tech support')}
+            else {console.error(error)}
+        }
     )
 })
 
