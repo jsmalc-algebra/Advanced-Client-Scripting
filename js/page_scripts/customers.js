@@ -16,7 +16,7 @@ const sorting_head = document.getElementById('sorting-head')
 const search_button = document.getElementById('search-button')
 const clear_button = document.getElementById('clear-button')
 
-async function getAllCities() {
+export async function getAllCities() {
     const response = await fetch('http://localhost:3000/City');
     return await response.json();
 }
@@ -111,7 +111,14 @@ function populateCustomerTable(customers) {
 
         if (localStorage.getItem("user")) {
             const td = document.createElement('td');
-            td.innerHTML = '<a href="#">REPLACE WITH DETAILS FAVICON</a>'
+            td.innerHTML = `<a href="customer-detail.html?id=${customer.id}">` +
+                '<button class="btn btn-primary" type="button">' +
+                '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">\n' +
+                '  <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>\n' +
+                '  <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/>\n' +
+                '</svg>'+
+                '</button>' +
+                '</a>'
             row.appendChild(td);
         }
 
@@ -236,6 +243,26 @@ function addViewDetailsColumn() {
     tr.appendChild(th);
 }
 
+function addNewCustomerButton() {
+    const topRow = document.getElementById('top-row');
+
+    topRow.innerHTML +=
+        `<a href="add-customer.html" class="btn btn-primary">
+            NEW CUSTOMER
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-plus-circle"
+                 viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                <path
+                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+            </svg>
+        </a>`
+}
+
+function authenticatedUserRender(){
+    addViewDetailsColumn();
+    addNewCustomerButton();
+}
+
 page_limiter.addEventListener('change', (event) => {
     state.limit = event.target.value;
     if (!state.searchMode) {
@@ -250,7 +277,8 @@ page_limiter.addEventListener('change', (event) => {
 pagination_nav.addEventListener('click', (event) => {
     const pageButton = event.target.closest('[data-page]');
 
-    if (pageButton) {state.curr_page = Number(pageButton.dataset.page);}
+    if (pageButton) {
+        state.curr_page = Number(pageButton.dataset.page);}
 
     if (event.target.closest('#prev-page')) {state.curr_page = state.curr_page - 1}
 
@@ -300,6 +328,6 @@ clear_button.addEventListener('click', (event) => {
         .catch(error => console.error(error));
 })
 
-if (localStorage.getItem("user")) {addViewDetailsColumn()}
+if (localStorage.getItem("user")) {authenticatedUserRender()}
 pageChange()
     .catch(error => console.error(error));
