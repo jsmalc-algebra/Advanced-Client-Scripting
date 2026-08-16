@@ -19,9 +19,28 @@ function makeIdBackedButtons(id){
 
     div.innerHTML=`
         <a href="edit-customer.html?id=${id}" type="button" class="btn btn-outline-primary" id="editBtn">Edit</a>
-        <a href="delete-customer.html?id=${id}" type="button" class="btn btn-outline-danger" id="deleteBtn">Delete</a>
+        <button type="button" class="btn btn-outline-danger" id="deleteBtn" value="${id}">Delete</button>
     `
+
+    document.getElementById("deleteBtn").addEventListener("click", event => {
+        deleteCustomer(id)
+            .catch(error => console.error(error));
+    });
 }
+
+async function deleteCustomer(id){
+    const response =await fetch("http://localhost:3000/Customer/"+id, {
+        method: "DELETE",
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        }
+    })
+
+    if(response.ok) {window.location.href = "customers.html";}
+    else {throw new Error(`Could not delete customer with id ${id}`);}
+}
+
+
 
 async function initPage(){
     const params = new URLSearchParams(window.location.search);
