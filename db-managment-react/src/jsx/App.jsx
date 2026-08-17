@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
 import AppNavbar from "./app-navbar.jsx";
-import {devLogin} from "../js/functions/dev-login.js";
 import BillsPage from "./BillsPage.jsx";
 import {useDevLogin} from "../js/hooks/useDevLogin.js";
 

@@ -1,6 +1,6 @@
 import {Button} from "react-bootstrap";
 
-function TableTopRow() {
+function TableTopRow({limit, onLimitChange}) {
     return (
         <div className="row g-2 align-items-end mb-4" id="top-row">
 
@@ -13,10 +13,13 @@ function TableTopRow() {
 
             <div className="col-6 col-md-3 ms-md-auto">
                 <label form="pageSize" className="form-label small text-muted mb-1">Rows per page</label>
-                <select id="pageSize" className="form-select form-select-sm" defaultValue={"10"}>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="50">50</option>
+                <select id="pageSize" className="form-select form-select-sm" defaultValue={limit}
+                onChange={
+                    (event) => onLimitChange(Number(event.target.value))
+                }>
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
+                    <option value={50}>50</option>
                 </select>
             </div>
         </div>

@@ -1,13 +1,16 @@
 import Bill from "../classes/Bills.js"
 
-async function fetchBillDataByCustomerId(id) {
-    const response = await fetch("http://localhost:3000/Bill?customerId="+id,{
+async function fetchPaginatedBillDataByCustomerId(id,page,limit) {
+    const params = new URLSearchParams({_page:page,_limit:limit,customerId:id});
+    const response = await fetch(`http://localhost:3000/Bill?${params}`,{
         method: "GET",
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('access_token')}`
         }
     });
-    return await response.json();
+    const data = await response.json();
+    const totalCount = Number(response.headers.get('x-total-count'));
+    return {data, totalCount}
 }
 
 async function fetchCustomerDataById(id) {
@@ -39,7 +42,7 @@ export async function getBills(){
     const params = new URLSearchParams(window.location.search);
     const customerId = params.get('id');
 
-    const bill_data = await fetchBillDataByCustomerId(customerId);
+    const bill_data = await fetchPaginatedBillDataByCustomerId(customerId);
     console.log(bill_data);
 
     const customer_data = await fetchCustomerDataById(customerId);
