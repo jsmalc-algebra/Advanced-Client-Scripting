@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import AppNavbar from "./app-navbar.jsx";
-import TableTopRow from "./table-top-row.jsx";
-import BillTable from "./bill-table.jsx";
 import {devLogin} from "../js/functions/dev-login.js";
-import TablePagination from "./TablePagination.jsx";
+import BillsPage from "./BillsPage.jsx";
 
 function App() {
     const [isLoggingIn, setIsLoggingIn] = useState(true);
@@ -41,9 +39,7 @@ function App() {
     return (
         <div className="card table-card shadow-sm p-4">
             <AppNavbar />
-            <TableTopRow/>
-            <BillTable/>
-            <TablePagination/>
+            <BillsPage/>
         </div>
     );
 }
