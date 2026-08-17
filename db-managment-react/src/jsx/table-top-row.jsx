@@ -13,8 +13,8 @@ function TableTopRow() {
 
             <div className="col-6 col-md-3 ms-md-auto">
                 <label form="pageSize" className="form-label small text-muted mb-1">Rows per page</label>
-                <select id="pageSize" className="form-select form-select-sm">
-                    <option value="10" selected>10</option>
+                <select id="pageSize" className="form-select form-select-sm" defaultValue={"10"}>
+                    <option value="10">10</option>
                     <option value="20">20</option>
                     <option value="50">50</option>
                 </select>

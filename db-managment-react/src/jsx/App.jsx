@@ -3,6 +3,7 @@ import AppNavbar from "./app-navbar.jsx";
 import TableTopRow from "./table-top-row.jsx";
 import BillTable from "./bill-table.jsx";
 import {devLogin} from "../js/functions/dev-login.js";
+import TablePagination from "./TablePagination.jsx";
 
 function App() {
     const [isLoggingIn, setIsLoggingIn] = useState(true);
@@ -42,6 +43,7 @@ function App() {
             <AppNavbar />
             <TableTopRow/>
             <BillTable/>
+            <TablePagination/>
         </div>
     );
 }

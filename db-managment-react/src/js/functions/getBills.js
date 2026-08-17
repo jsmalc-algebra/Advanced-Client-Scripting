@@ -11,7 +11,7 @@ async function fetchBillDataByCustomerId(id) {
 }
 
 async function fetchCustomerDataById(id) {
-    const response = await fetch("http://localhost:3000/Customers/" + id);
+    const response = await fetch("http://localhost:3000/Customer/" + id);
     return await response.json();
 }
 
@@ -37,16 +37,24 @@ async function fetchCreditCardDataById(id) {
 
 export async function getBills(){
     const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
+    const customerId = params.get('id');
 
-    const bill_data = await fetchBillDataByCustomerId(id);
-    const customer_data = await fetchCustomerDataById(id);
-    const seller_data = await fetchSellerDataById(id);
-    const credit_card_data = await fetchCreditCardDataById(id);
+    const bill_data = await fetchBillDataByCustomerId(customerId);
+    console.log(bill_data);
+
+    const customer_data = await fetchCustomerDataById(customerId);
+
 
     const bills = []
 
-    for (let bill in bill_data) {
+    for (let bill of bill_data) {
+        const seller_data = await fetchSellerDataById(bill.sellerId);
+
+        let credit_card_data;
+
+        if (bill.creditCardId) {credit_card_data = await fetchCreditCardDataById(bill.creditCardId);}
+        else {credit_card_data = "NOT ON FILE"}
+
         bills.push(
             new Bill(
                 bill.id,
@@ -61,5 +69,7 @@ export async function getBills(){
         )
     }
 
+    console.log("bills array: ");
+    console.log(bills);
     return bills;
 }

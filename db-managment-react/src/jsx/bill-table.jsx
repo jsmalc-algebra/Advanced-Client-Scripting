@@ -2,6 +2,7 @@ import { FaSort } from "react-icons/fa6";
 import {useEffect, useState} from "react";
 import {getBills} from "../js/functions/getBills";
 import { LiaEuroSignSolid } from "react-icons/lia";
+import "../css/table_page.css"
 
 function BillTable() {
     const [rows, setRows] = useState([]);
@@ -15,7 +16,7 @@ function BillTable() {
             <table className="table table-hover align-middle">
                 <thead className="table-light" id="sorting-head">
                 <tr id="table-head-row">
-                    <th className="sortable" data-sort="date">Date <span className="sort-icon"><FaSort/></span></th>
+                    <th className="sortable" data-sort="date">Date</th>
                     <th className="sortable" data-sort="billNumber">Bill Number <span className="sort-icon"><FaSort/></span></th>
                     <th className="sortable" data-sort="customer">Customer <span className="sort-icon"><FaSort/></span></th>
                     <th className="sortable" data-sort="seller">Seller <span className="sort-icon"><FaSort/></span></th>
@@ -33,7 +34,12 @@ function BillTable() {
                         <td>{row.sellerName + " " + row.sellerSurname}</td>
                         <td>{row.cardExpired}</td>
                         <td>{row.comment}</td>
-                        <td>{row.total}<LiaEuroSignSolid /></td>
+                        <td>
+                            <span  style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                                {row.total}
+                                <LiaEuroSignSolid />
+                            </span>
+                        </td>
                     </tr>
                 )))}
                 </tbody>
