@@ -14,10 +14,13 @@ export default class Bills {
 
     isCardExpired(card_data) {
         if (card_data.expirationYear < new Date().getFullYear()) {
-            return true
+            return true;
         }
         else if (card_data.expirationYear === new Date().getFullYear()) {
-            return card_data.expirationMonth > new Date().getMonth();
+            return card_data.expirationMonth <= new Date().getMonth()+1;
+        }
+        else {
+            return false;
         }
     }
 }

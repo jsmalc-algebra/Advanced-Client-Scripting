@@ -1,6 +1,11 @@
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 
 function AppNavbar() {
+    let username;
+    if (localStorage.getItem("user")) {
+        username = localStorage.getItem("user");
+    } else {username = "anonymous"}
+
     return (
         <Navbar expand="lg" variant="dark" bg="secondary" className="bg-gradient">
             <Container fluid>
@@ -14,7 +19,7 @@ function AppNavbar() {
                             Home
                         </Nav.Link>
                         <Nav.Item>
-                            <span id="user-display">User: Guest</span>
+                            <span id="user-display">User: {username}</span>
                         </Nav.Item>
                         <Nav.Item>
                             <Button variant="danger" id="logout-btn" type="button">

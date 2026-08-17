@@ -3,12 +3,12 @@ import {useEffect, useState} from "react";
 import {getBills} from "../js/functions/getBills";
 import { LiaEuroSignSolid } from "react-icons/lia";
 
-function billTable() {
+function BillTable() {
     const [rows, setRows] = useState([]);
 
     useEffect(() => {
         getBills().then(setRows);
-    })
+    }, [])
 
     return (
         <div className="table-responsive">
@@ -42,4 +42,4 @@ function billTable() {
     );
 }
 
-export default billTable;
+export default BillTable;
