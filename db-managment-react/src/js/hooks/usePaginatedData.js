@@ -4,7 +4,6 @@ export function usePaginatedData(fetchPage, page, limit, deps = []) {
     const [data, setData] = useState([]);
     const [maxPage, setMaxPage] = useState(1);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         let cancelled = false;
@@ -14,11 +13,10 @@ export function usePaginatedData(fetchPage, page, limit, deps = []) {
             .then(({ items, totalCount }) => {
                 if (cancelled) return;
                 setData(items);
+                console.log("total number of items", totalCount);
+                console.log("limit", limit);
+                console.log(Math.ceil(totalCount / limit));
                 setMaxPage(Math.max(1, Math.ceil(totalCount / limit)));
-                setError(null);
-            })
-            .catch(err => {
-                if (!cancelled) setError(err);
             })
             .finally(() => {
                 if (!cancelled) setLoading(false);
@@ -27,5 +25,5 @@ export function usePaginatedData(fetchPage, page, limit, deps = []) {
         return () => { cancelled = true; };
     }, [page, limit, ...deps]);
 
-    return { data, maxPage, loading, error };
+    return { data, maxPage, loading };
 }

@@ -9,7 +9,7 @@ function BillsPage() {
     const [limit, setLimit] = useState(10);
     const [currPage, setCurrPage] = useState(1);
 
-    const {data:bills, maxPage, loading} = usePaginatedData(getBills, currPage, limit);
+    const {data:rows, maxPage, loading} = usePaginatedData(getBills, currPage, limit);
 
 
     return (
@@ -22,7 +22,7 @@ function BillsPage() {
                 }}
             />
             <BillTable
-                bills={bills}
+                rows={rows}
                 loading={loading}
             />
             <TablePagination

@@ -4,12 +4,14 @@ import {getBills} from "../js/functions/getBills";
 import { LiaEuroSignSolid } from "react-icons/lia";
 import "../css/table_page.css"
 
-function BillTable() {
-    const [rows, setRows] = useState([]);
+function BillTable({rows, loading}) {
 
-    useEffect(() => {
-        getBills().then(setRows);
-    }, [])
+    console.log("Loading: ", loading);
+    console.log("Rows", rows);
+
+    if (loading) {
+        return <p>Loading bills...</p>;
+    }
 
     return (
         <div className="table-responsive">

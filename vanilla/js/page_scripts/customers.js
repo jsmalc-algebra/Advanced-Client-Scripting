@@ -218,7 +218,8 @@ async function pageChange() {
     if (state.sortBy === 'city') {
         customers = sortCustomersByCity(customers)
         customers = paginateCustomersArray(customers)
-    } // Uses ES5 code
+    }
+    // Uses ES5 code
     populateCustomerTable(customers);
     populatePaginationNav();
 }

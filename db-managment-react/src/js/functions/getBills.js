@@ -42,13 +42,11 @@ export async function getBills(){
     const params = new URLSearchParams(window.location.search);
     const customerId = params.get('id');
 
-    const bill_data = await fetchPaginatedBillDataByCustomerId(customerId);
-    console.log(bill_data);
-
+    const {data:bill_data,totalCount:totalCount} = await fetchPaginatedBillDataByCustomerId(customerId);
     const customer_data = await fetchCustomerDataById(customerId);
 
 
-    const bills = []
+    const items = []
 
     for (let bill of bill_data) {
         const seller_data = await fetchSellerDataById(bill.sellerId);
@@ -58,7 +56,7 @@ export async function getBills(){
         if (bill.creditCardId) {credit_card_data = await fetchCreditCardDataById(bill.creditCardId);}
         else {credit_card_data = "NOT ON FILE"}
 
-        bills.push(
+        items.push(
             new Bill(
                 bill.id,
                 bill.date,
@@ -72,7 +70,5 @@ export async function getBills(){
         )
     }
 
-    console.log("bills array: ");
-    console.log(bills);
-    return bills;
+    return {items, totalCount};
 }
