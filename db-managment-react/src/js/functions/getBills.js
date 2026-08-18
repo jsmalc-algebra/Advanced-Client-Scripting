@@ -54,7 +54,7 @@ export async function getBills(){
         let credit_card_data;
 
         if (bill.creditCardId) {credit_card_data = await fetchCreditCardDataById(bill.creditCardId);}
-        else {credit_card_data = "NOT ON FILE"}
+        else {credit_card_data = "NOT ON RECORD"}
 
         items.push(
             new Bill(

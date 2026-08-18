@@ -8,7 +8,7 @@ export default class Bills {
         this.sellerName = seller_data.name
         this.sellerSurname = seller_data.surname
 
-        if (creditCard_data === "NOT ON FILE") {this.cardExpired = creditCard_data}
+        if (creditCard_data === "NOT ON RECORD") {this.cardExpired = creditCard_data}
         else {this.cardExpired = this.isCardExpired(creditCard_data)}
 
         this.comment = comment

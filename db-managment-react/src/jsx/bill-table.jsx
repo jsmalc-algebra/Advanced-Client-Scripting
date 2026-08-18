@@ -6,16 +6,13 @@ import "../css/table_page.css"
 
 function BillTable({rows, loading}) {
 
-    console.log("Loading: ", loading);
-    console.log("Rows", rows);
-
     if (loading) {
         return <p>Loading bills...</p>;
     }
 
     return (
         <div className="table-responsive">
-            <table className="table table-hover align-middle">
+            <table className="table table-hover align-middle table-bordered">
                 <thead className="table-light" id="sorting-head">
                 <tr id="table-head-row">
                     <th className="sortable" data-sort="date">Date</th>
@@ -29,7 +26,14 @@ function BillTable({rows, loading}) {
                 </thead>
                 <tbody id="table-body">
                 {rows.map((row =>(
-                    <tr key={row.id}>
+                    <tr
+                        key={row.id}
+                        className={`
+                        ${row.cardExpired === "EXPIRED" ? "table-danger" : ""}
+                        ${row.cardExpired === "NOT ON RECORD" ? "table-warning" : ""}
+                        ${row.cardExpired === "VALID" ? "table-success" : ""}
+                        `}
+                    >
                         <td>{row.date}</td>
                         <td>{row.billNumber}</td>
                         <td>{row.customerName + " " + row.customerSurname}</td>
