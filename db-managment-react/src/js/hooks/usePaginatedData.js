@@ -23,7 +23,7 @@ export function usePaginatedData(fetchPage, page, limit, sortBy, sortOrder) {
             });
 
         return () => { cancelled = true; };
-    }, [page, limit, ...deps]);
+    }, [page, limit,sortBy, sortOrder]);
 
     return { data, maxPage, loading };
 }

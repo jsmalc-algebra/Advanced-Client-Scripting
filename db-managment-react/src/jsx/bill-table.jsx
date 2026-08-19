@@ -13,7 +13,7 @@ function BillTable({rows, loading, sortBy, sortOrder, onSort}) {
 
     function sortIcon(field) {
         if (sortBy !== field) {return <FaSort/>;}
-        else if (sortOrder === 'asc') {return <FaSortUp/>}
+        else if (sortOrder === 'desc') {return <FaSortUp/>}
         else {return <FaSortDown/>;}
     }
 

@@ -28,6 +28,9 @@ async function fetchPaginatedBillDataByCustomerId(id,page,limit, sortBy, sortOrd
         params.append('_order', sortOrder)
     }
 
+    console.debug("Params: " + JSON.stringify(params))
+    console.debug("SortBy status: " + sortBy);
+
     const response = await fetch(`http://localhost:3000/Bill?${params}`,{
         method: "GET",
         headers: {
@@ -35,6 +38,9 @@ async function fetchPaginatedBillDataByCustomerId(id,page,limit, sortBy, sortOrd
         }
     });
     const data = await response.json();
+
+    console.debug("Bill data using API search: ", data)
+
     const totalCount = Number(response.headers.get('x-total-count'));
     return {data, totalCount}
 }
@@ -71,13 +77,27 @@ export async function getBills(page,limit,sortBy,sortOrder) {
     let bill_data;
     let totalCount;
 
-    if(sortBy && !LOCAL_SORT_FIELDS.includes(sortBy)){
-       ( {data:bill_data,totalCount:totalCount} = await fetchPaginatedBillDataByCustomerId(customerId,page,limit,sortBy,sortOrder));
+    if(sortBy === null || !LOCAL_SORT_FIELDS.includes(sortBy)){
+        console.debug("using regular function");
+        ( {data:bill_data,totalCount:totalCount} = await fetchPaginatedBillDataByCustomerId(customerId,page,limit,sortBy,sortOrder));
     } else {
-        let bill_response = await fetch(`http://localhost:3000/Bill?customerId=`+customerId)
+        console.debug("using local sort function");
+        let bill_response = await fetch(`http://localhost:3000/Bill?customerId=`+customerId,{
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            }
+        })
         bill_data = await bill_response.json();
 
-        bill_response = await fetch(`http://localhost:3000/Bill?=_page=2&_limit=10&customerId=`+customerId);
+        console.debug("bill data using local sort fetch: ", bill_data)
+
+        bill_response = await fetch(`http://localhost:3000/Bill?=_page=2&_limit=10&customerId=`+customerId, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            }
+        });
         totalCount = Number(bill_response.headers.get('x-total-count'));
     }
 
@@ -87,6 +107,7 @@ export async function getBills(page,limit,sortBy,sortOrder) {
 
     let items = []
 
+    console.debug("bill data: ", bill_data)
     for (let bill of bill_data) {
         const seller_data = await fetchSellerDataById(bill.sellerId);
 
