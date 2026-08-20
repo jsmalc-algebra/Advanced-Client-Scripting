@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export function usePaginatedData(fetchPage, page, limit, sortBy, sortOrder) {
+export function usePaginatedData(fetchPage, page, limit, sortBy, sortOrder, searchString) {
     const [data, setData] = useState([]);
     const [maxPage, setMaxPage] = useState(1);
     const [loading, setLoading] = useState(true);
@@ -9,7 +9,7 @@ export function usePaginatedData(fetchPage, page, limit, sortBy, sortOrder) {
         let cancelled = false;
         setLoading(true);
 
-        fetchPage(page, limit, sortBy, sortOrder)
+        fetchPage(page, limit, sortBy, sortOrder, searchString)
             .then(({ items, totalCount }) => {
                 if (cancelled) return;
                 setData(items);

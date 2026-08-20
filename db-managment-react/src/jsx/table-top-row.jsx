@@ -1,14 +1,33 @@
 import {Button} from "react-bootstrap";
+import {useState} from "react";
 
-function TableTopRow({limit, onLimitChange}) {
+function TableTopRow({limit, onLimitChange, onSearch, onClearSearch}) {
+    const [searchInput, setSearchInput] = useState('');
+
+    function handleSearchClick() {
+        onSearch(searchInput);
+    }
+
+    function handleClearClick() {
+        setSearchInput('');
+        onClearSearch();
+    }
+
     return (
         <div className="row g-2 align-items-end mb-4" id="top-row">
 
             <div className="col-12 col-md-4">
                 <label form="searchInput" className="form-label small text-muted mb-1">Search</label>
-                <input type="text" id="searchInput" className="form-control form-control-sm" placeholder="Name, email, city..."/>
-                <Button type="button" id="search-button" className="btn btn-info btn-sm">Search</Button>
-                <Button type="button" id="clear-button" className="btn btn-warning btn-sm">Clear</Button>
+                <input
+                    type="text"
+                    id="searchInput"
+                    className="form-control form-control-sm"
+                    placeholder="Name, email, city..."
+                    value={searchInput}
+                    onChange={e => setSearchInput(e.target.value)}
+                />
+                <Button type="button" id="search-button" className="btn btn-info btn-sm" onClick={handleSearchClick}>Search</Button>
+                <Button type="button" id="clear-button" className="btn btn-warning btn-sm" onClick={handleClearClick}>Clear</Button>
             </div>
 
             <div className="col-6 col-md-3 ms-md-auto">

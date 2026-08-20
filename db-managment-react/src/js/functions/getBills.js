@@ -105,7 +105,7 @@ async function fetchCreditCardDataById(id,searchString) {
     return await response.json();
 }
 
-export async function getBills(page,limit,sortBy,sortOrder) {
+export async function getBills(page, limit, sortBy, sortOrder, searchString) {
     const params = new URLSearchParams(window.location.search);
     const customerId = params.get('id');
 
@@ -150,18 +150,21 @@ export async function getBills(page,limit,sortBy,sortOrder) {
     return {items, totalCount};
 }
 
-export async function searchBills(CustomerId,page,limit,searchString) {
+export async function searchBills(page, limit, sortBy, sortOrder, searchString) {
     let searched_bill_data;
     let totalCount;
 
+    const params = new URLSearchParams(window.location.search);
+    const customerId = params.get('id');
 
-    ({data:searched_bill_data,totalCount:totalCount} = fetchPaginatedBillDataByCustomerId(CustomerId,page,limit,undefined,undefined,searchString));
-    const customer_data = await fetchCustomerDataById(CustomerId);
+
+    ({data:searched_bill_data,totalCount:totalCount} = fetchPaginatedBillDataByCustomerId(customerId,page,limit,undefined,undefined,searchString));
+    const customer_data = await fetchCustomerDataById(customerId);
 
     let items = itemizeBills(searched_bill_data,customer_data);
     let item_ids = new Set(items.map((item) => item.id));
 
-    let searched_sellers_data = await fetchSellerDataById(CustomerId,searchString);
+    let searched_sellers_data = await fetchSellerDataById(customerId,searchString);
 
     for (let seller in searched_sellers_data) {
         const bill_response = await fetch(`http://localhost:3000/Bill?sellerId=${seller.id}`,{
@@ -199,7 +202,7 @@ export async function searchBills(CustomerId,page,limit,searchString) {
         );
     }
 
-    let searched_credit_card_data = await fetchCreditCardDataById(CustomerId,searchString);
+    let searched_credit_card_data = await fetchCreditCardDataById(customerId,searchString);
 
     for (let creditCard in searched_credit_card_data) {
         const bill_response = await fetch(`http://localhost:3000/Bill?creditCardId=${creditCard.id}`,{
