@@ -63,7 +63,7 @@ async function fetchPaginatedBillDataByCustomerId(id,page,limit, sortBy, sortOrd
         params.append('q', searchString)
     }
 
-    console.debug("Params: " + JSON.stringify(params))
+    console.debug("fetchPaginatedBillDataByCustomerId params: " + params.toString())
     console.debug("SortBy status: " + sortBy);
 
     const response = await fetch(`http://localhost:3000/Bill?${params}`,{
@@ -85,8 +85,8 @@ async function fetchCustomerDataById(id) {
     return await response.json();
 }
 
-async function fetchSellerDataById(id,searchString) {
-    const response = await fetch(`http://localhost:3000/Seller/${id}${searchString ? `?q=${searchString}` : ''}`, {
+async function fetchSellerDataById(id) {
+    const response = await fetch(`http://localhost:3000/Seller/${id}}`, {
         method: "GET",
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('access_token')}`
@@ -95,8 +95,8 @@ async function fetchSellerDataById(id,searchString) {
     return await response.json();
 }
 
-async function fetchCreditCardDataById(id,searchString) {
-    const response = await fetch(`http://localhost:3000/CreditCard/${id}${searchString ? `?q=${searchString}` : ''}` ,{
+async function fetchCreditCardDataById(id) {
+    const response = await fetch(`http://localhost:3000/CreditCard/${id}}` ,{
         method: "GET",
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('access_token')}`
@@ -106,6 +106,8 @@ async function fetchCreditCardDataById(id,searchString) {
 }
 
 export async function getBills(page, limit, sortBy, sortOrder, searchString) {
+    console.log("getBills called");
+
     const params = new URLSearchParams(window.location.search);
     const customerId = params.get('id');
 
@@ -127,20 +129,14 @@ export async function getBills(page, limit, sortBy, sortOrder, searchString) {
 
         console.debug("bill data using local sort fetch: ", bill_data)
 
-        bill_response = await fetch(`http://localhost:3000/Bill?=_page=2&_limit=10&customerId=`+customerId, {
-            method: "GET",
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-            }
-        });
-        totalCount = Number(bill_response.headers.get('x-total-count'));
+        totalCount = bill_data.length;
     }
 
 
     const customer_data = await fetchCustomerDataById(customerId);
 
     console.debug("bill data: ", bill_data)
-    let items = itemizeBills(bill_data,customer_data);
+    let items = await itemizeBills(bill_data,customer_data);
 
     if (sortBy && LOCAL_SORT_FIELDS.includes(sortBy)) {
         items = sortBillArray(items, sortBy, sortOrder);
@@ -151,6 +147,8 @@ export async function getBills(page, limit, sortBy, sortOrder, searchString) {
 }
 
 export async function searchBills(page, limit, sortBy, sortOrder, searchString) {
+    console.log("searchBills called");
+
     let searched_bill_data;
     let totalCount;
 
@@ -158,15 +156,27 @@ export async function searchBills(page, limit, sortBy, sortOrder, searchString) 
     const customerId = params.get('id');
 
 
-    ({data:searched_bill_data,totalCount:totalCount} = fetchPaginatedBillDataByCustomerId(customerId,page,limit,undefined,undefined,searchString));
+    ({data:searched_bill_data,totalCount:totalCount} = await fetchPaginatedBillDataByCustomerId(customerId,page,limit,undefined,undefined,searchString));
     const customer_data = await fetchCustomerDataById(customerId);
 
-    let items = itemizeBills(searched_bill_data,customer_data);
+    console.log("searched bill data: ",searched_bill_data);
+
+    let items = await itemizeBills(searched_bill_data,customer_data);
     let item_ids = new Set(items.map((item) => item.id));
 
-    let searched_sellers_data = await fetchSellerDataById(customerId,searchString);
 
-    for (let seller in searched_sellers_data) {
+    let response = await fetch(`http://localhost:3000/Seller?q=${searchString}`,{
+        method: "GET",
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        }
+    });
+    console.debug("Seller searched response: ",response);
+    const searched_sellers_data = await response.json();
+
+    console.log("searched sellers data: ", searched_sellers_data);
+
+    for (let seller of searched_sellers_data) {
         const bill_response = await fetch(`http://localhost:3000/Bill?sellerId=${seller.id}`,{
             method: "GET",
             headers: {
@@ -200,19 +210,27 @@ export async function searchBills(page, limit, sortBy, sortOrder, searchString) 
                 bill_data.total
             )
         );
+        console.log("new item pushed, current items state: ",items);
     }
 
-    let searched_credit_card_data = await fetchCreditCardDataById(customerId,searchString);
+     response  = await fetch(`http://localhost:3000/CreditCard?q=${searchString}`,{
+        method: "GET",
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        }
+    });
+    const searched_credit_card_data = await response.json();
+    console.log("searched_credit_card_data: ",searched_credit_card_data);
 
-    for (let creditCard in searched_credit_card_data) {
+    for (let creditCard of searched_credit_card_data) {
         const bill_response = await fetch(`http://localhost:3000/Bill?creditCardId=${creditCard.id}`,{
             method: "GET",
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`
             }
         });
-
         const bill_data = await bill_response.json();
+        console.log("credit card search bill data: ", bill_data);
 
         if (item_ids.has(bill_data.id)) {continue;}
         else {item_ids.add(bill_data.id);}
@@ -231,6 +249,7 @@ export async function searchBills(page, limit, sortBy, sortOrder, searchString) 
             bill_data.total
             )
         );
+        console.log("new item pushed, current items state: ",items);
     }
 
     items = paginateBillArray(items, page, limit);

@@ -9,7 +9,9 @@ function BillTable({rows, loading, sortBy, sortOrder, onSort}) {
 
     if (loading) {
         return <p>Loading bills...</p>;
-    }
+    } else {console.log("Rows: ",rows);}
+
+
 
     function sortIcon(field) {
         if (sortBy !== field) {return <FaSort/>;}

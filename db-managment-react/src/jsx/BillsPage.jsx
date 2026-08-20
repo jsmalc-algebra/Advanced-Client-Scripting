@@ -19,6 +19,7 @@ function BillsPage() {
     const {data:rows, maxPage, loading} = usePaginatedData(fetchPage, currPage, limit, sortBy, sortOrder, searchString);
 
 
+
     function handleSort(field) {
         if (searchMode) {return;}
         if (sortBy !== field) {

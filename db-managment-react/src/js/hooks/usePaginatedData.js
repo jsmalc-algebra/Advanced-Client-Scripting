@@ -5,6 +5,8 @@ export function usePaginatedData(fetchPage, page, limit, sortBy, sortOrder, sear
     const [maxPage, setMaxPage] = useState(1);
     const [loading, setLoading] = useState(true);
 
+    console.debug("fetching page: ",fetchPage);
+
     useEffect(() => {
         let cancelled = false;
         setLoading(true);
@@ -13,6 +15,7 @@ export function usePaginatedData(fetchPage, page, limit, sortBy, sortOrder, sear
             .then(({ items, totalCount }) => {
                 if (cancelled) return;
                 setData(items);
+                console.debug("set data: ",items);
                 console.log("total number of items", totalCount);
                 console.log("limit", limit);
                 console.log(Math.ceil(totalCount / limit));
@@ -23,7 +26,7 @@ export function usePaginatedData(fetchPage, page, limit, sortBy, sortOrder, sear
             });
 
         return () => { cancelled = true; };
-    }, [page, limit,sortBy, sortOrder]);
+    }, [fetchPage, page, limit, sortBy, sortOrder, searchString]);
 
     return { data, maxPage, loading };
 }
