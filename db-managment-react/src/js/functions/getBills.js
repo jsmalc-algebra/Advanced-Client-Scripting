@@ -2,6 +2,37 @@ import Bill from "../classes/Bills.js"
 
 const LOCAL_SORT_FIELDS = ['customer','seller','creditCardStatus']
 
+async function itemizeBills(bill_data, customer_data) {
+    let itemizedBills = []
+
+    for (let bill of bill_data) {
+        const seller_data = await fetchSellerDataById(bill.sellerId);
+
+        let credit_card_data;
+
+        if (bill.creditCardId) {
+            credit_card_data = await fetchCreditCardDataById(bill.creditCardId);
+        } else {
+            credit_card_data = "NOT ON RECORD"
+        }
+
+        itemizedBills.push(
+            new Bill(
+                bill.id,
+                bill.date,
+                bill.billNumber,
+                customer_data,
+                seller_data,
+                credit_card_data,
+                bill.comment,
+                bill.total
+            )
+        )
+    }
+
+    return itemizedBills
+}
+
 function sortBillArray(bill_array, sortBy, sortOrder) {
     return bill_array.sort(function (a, b) {
         let result;
@@ -20,12 +51,16 @@ function paginateBillArray(bill_array, currentPage, limit) {
     return bill_array.slice(start, end);
 }
 
-async function fetchPaginatedBillDataByCustomerId(id,page,limit, sortBy, sortOrder) {
+async function fetchPaginatedBillDataByCustomerId(id,page,limit, sortBy, sortOrder,searchString) {
     const params = new URLSearchParams({_page:page,_limit:limit,customerId:id});
 
     if (sortBy) {
         params.append('_sort', sortBy)
         params.append('_order', sortOrder)
+    }
+
+    else if (searchString) {
+        params.append('q', searchString)
     }
 
     console.debug("Params: " + JSON.stringify(params))
@@ -50,8 +85,8 @@ async function fetchCustomerDataById(id) {
     return await response.json();
 }
 
-async function fetchSellerDataById(id) {
-    const response = await fetch("http://localhost:3000/Seller/" + id, {
+async function fetchSellerDataById(id,searchString) {
+    const response = await fetch(`http://localhost:3000/Seller/${id}${searchString ? `?q=${searchString}` : ''}`, {
         method: "GET",
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('access_token')}`
@@ -60,8 +95,8 @@ async function fetchSellerDataById(id) {
     return await response.json();
 }
 
-async function fetchCreditCardDataById(id) {
-    const response = await fetch("http://localhost:3000/CreditCard/" + id, {
+async function fetchCreditCardDataById(id,searchString) {
+    const response = await fetch(`http://localhost:3000/CreditCard/${id}${searchString ? `?q=${searchString}` : ''}` ,{
         method: "GET",
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('access_token')}`
@@ -104,35 +139,95 @@ export async function getBills(page,limit,sortBy,sortOrder) {
 
     const customer_data = await fetchCustomerDataById(customerId);
 
-
-    let items = []
-
     console.debug("bill data: ", bill_data)
-    for (let bill of bill_data) {
-        const seller_data = await fetchSellerDataById(bill.sellerId);
-
-        let credit_card_data;
-
-        if (bill.creditCardId) {credit_card_data = await fetchCreditCardDataById(bill.creditCardId);}
-        else {credit_card_data = "NOT ON RECORD"}
-
-        items.push(
-            new Bill(
-                bill.id,
-                bill.date,
-                bill.billNumber,
-                customer_data,
-                seller_data,
-                credit_card_data,
-                bill.comment,
-                bill.total
-            )
-        )
-    }
+    let items = itemizeBills(bill_data,customer_data);
 
     if (sortBy && LOCAL_SORT_FIELDS.includes(sortBy)) {
         items = sortBillArray(items, sortBy, sortOrder);
         items = paginateBillArray(items, page, limit);
+    }
+
+    return {items, totalCount};
+}
+
+export async function searchBills(CustomerId,page,limit,searchString) {
+    let searched_bill_data;
+    let totalCount;
+
+
+    ({data:searched_bill_data,totalCount:totalCount} = fetchPaginatedBillDataByCustomerId(CustomerId,page,limit,undefined,undefined,searchString));
+    const customer_data = await fetchCustomerDataById(CustomerId);
+
+    let items = itemizeBills(searched_bill_data,customer_data);
+    let item_ids = new Set(items.map((item) => item.id));
+
+    let searched_sellers_data = await fetchSellerDataById(CustomerId,searchString);
+
+    for (let seller in searched_sellers_data) {
+        const bill_response = await fetch(`http://localhost:3000/Bill?sellerId=${seller.id}`,{
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            }
+        });
+
+        const bill_data = await bill_response.json();
+
+        if (item_ids.has(bill_data.id)) {continue;}
+
+        else {item_ids.add(bill_data.id);}
+
+        let credit_card_data;
+
+        if (bill_data.creditCardId) {
+            credit_card_data = await fetchCreditCardDataById(bill_data.creditCardId);
+        } else {
+            credit_card_data = "NOT ON RECORD"
+        }
+
+        items.push(
+            new Bill(
+                bill_data.id,
+                bill_data.date,
+                bill_data.billNumber,
+                customer_data,
+                seller,
+                credit_card_data,
+                bill_data.comment,
+                bill_data.total
+            )
+        );
+    }
+
+    let searched_credit_card_data = await fetchCreditCardDataById(CustomerId,searchString);
+
+    for (let creditCard in searched_credit_card_data) {
+        const bill_response = await fetch(`http://localhost:3000/Bill?creditCardId=${creditCard.id}`,{
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            }
+        });
+
+        const bill_data = await bill_response.json();
+
+        if (item_ids.has(bill_data.id)) {continue;}
+        else {item_ids.add(bill_data.id);}
+
+        let seller_data = await fetchSellerDataById(bill_data.sellerId);
+
+        items.push(
+            new Bill(
+            bill_data.id,
+            bill_data.date,
+            bill_data.billNumber,
+            customer_data,
+            seller_data,
+            creditCard,
+            bill_data.comment,
+            bill_data.total
+            )
+        );
     }
 
     return {items, totalCount};
