@@ -150,6 +150,7 @@ export async function searchBills(page, limit, sortBy, sortOrder, searchString) 
     console.log("searchBills called");
 
     let searched_bill_data;
+    let full_bill_data;
     let totalCount;
 
     const params = new URLSearchParams(window.location.search);
@@ -161,8 +162,12 @@ export async function searchBills(page, limit, sortBy, sortOrder, searchString) 
 
     console.log("searched bill data: ",searched_bill_data);
 
+    ({data:full_bill_data,totalCount:null} = await fetchPaginatedBillDataByCustomerId(customerId,page,limit,undefined,undefined,undefined));
     let items = await itemizeBills(searched_bill_data,customer_data);
+    let all_items = await itemizeBills(full_bill_data,customer_data);
+
     let item_ids = new Set(items.map((item) => item.id));
+    let all_item_leftovers = all_items.filter((item) => {!item_ids.has(item.id)});
 
 
     let response = await fetch(`http://localhost:3000/Seller?q=${searchString}`,{
@@ -177,18 +182,17 @@ export async function searchBills(page, limit, sortBy, sortOrder, searchString) 
     console.log("searched sellers data: ", searched_sellers_data);
 
     for (let seller of searched_sellers_data) {
-        const bill_response = await fetch(`http://localhost:3000/Bill?sellerId=${seller.id}`,{
+
+        if (all_item_leftovers.some(item => item.sellerId !== seller.id)) {continue;}
+
+        let request = fetch(`http://localhost:3000/Bill?customerId=${customerId}&sellerId=${seller.id}`,{
             method: "GET",
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`
             }
-        });
+        })
 
-        const bill_data = await bill_response.json();
-
-        if (item_ids.has(bill_data.id)) {continue;}
-
-        else {item_ids.add(bill_data.id);}
+        const bill_data = await request.json();
 
         let credit_card_data;
 
@@ -223,7 +227,9 @@ export async function searchBills(page, limit, sortBy, sortOrder, searchString) 
     console.log("searched_credit_card_data: ",searched_credit_card_data);
 
     for (let creditCard of searched_credit_card_data) {
-        const bill_response = await fetch(`http://localhost:3000/Bill?creditCardId=${creditCard.id}`,{
+        if (all_item_leftovers.some(item => item.creditCardId !== creditCard.id)) {continue;}
+
+        const bill_response = await fetch(`http://localhost:3000/Bill?creditCardId=${creditCard.id}&customerId=${customerId}`,{
             method: "GET",
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`
@@ -231,9 +237,6 @@ export async function searchBills(page, limit, sortBy, sortOrder, searchString) 
         });
         const bill_data = await bill_response.json();
         console.log("credit card search bill data: ", bill_data);
-
-        if (item_ids.has(bill_data.id)) {continue;}
-        else {item_ids.add(bill_data.id);}
 
         let seller_data = await fetchSellerDataById(bill_data.sellerId);
 
@@ -251,6 +254,16 @@ export async function searchBills(page, limit, sortBy, sortOrder, searchString) 
         );
         console.log("new item pushed, current items state: ",items);
     }
+
+    item_ids = new Set();
+    items = items.filter((item) => {
+        if (item_ids.has(item.id)) {
+            return false;
+        }
+
+        item_ids.add(item.id);
+        return true;
+    })
 
     items = paginateBillArray(items, page, limit);
 
