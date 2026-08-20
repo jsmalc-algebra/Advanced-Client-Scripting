@@ -230,5 +230,7 @@ export async function searchBills(CustomerId,page,limit,searchString) {
         );
     }
 
+    items = paginateBillArray(items, page, limit);
+
     return {items, totalCount};
 }
