@@ -44,15 +44,6 @@ function TableTopRow({limit, onLimitChange, onSearch, onClearSearch}) {
                     <option value={50}>50</option>
                 </select>
             </div>
-                <a href="add-customer.html" className="btn btn-primary" style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
-                    <span  style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                        NEW BILL
-                        <BiPlusCircle />
-                    </span>
-                </a>
-            <div>
-
-            </div>
         </div>
     );
 }
