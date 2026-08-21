@@ -1,5 +1,6 @@
 import {Button} from "react-bootstrap";
 import {useState} from "react";
+import { BiPlusCircle } from "react-icons/bi";
 
 function TableTopRow({limit, onLimitChange, onSearch, onClearSearch}) {
     const [searchInput, setSearchInput] = useState('');
@@ -26,20 +27,31 @@ function TableTopRow({limit, onLimitChange, onSearch, onClearSearch}) {
                     value={searchInput}
                     onChange={e => setSearchInput(e.target.value)}
                 />
-                <Button type="button" id="search-button" className="btn btn-info btn-sm" onClick={handleSearchClick}>Search</Button>
-                <Button type="button" id="clear-button" className="btn btn-warning btn-sm" onClick={handleClearClick}>Clear</Button>
+                <Button type="button" id="search-button" className="btn btn-info btn-sm"
+                        onClick={handleSearchClick}>Search</Button>
+                <Button type="button" id="clear-button" className="btn btn-warning btn-sm"
+                        onClick={handleClearClick}>Clear</Button>
             </div>
 
             <div className="col-6 col-md-3 ms-md-auto">
                 <label form="pageSize" className="form-label small text-muted mb-1">Rows per page</label>
                 <select id="pageSize" className="form-select form-select-sm" defaultValue={limit}
-                onChange={
-                    (event) => onLimitChange(Number(event.target.value))
-                }>
+                        onChange={
+                            (event) => onLimitChange(Number(event.target.value))
+                        }>
                     <option value={10}>10</option>
                     <option value={20}>20</option>
                     <option value={50}>50</option>
                 </select>
+            </div>
+                <a href="add-customer.html" className="btn btn-primary" style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
+                    <span  style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                        NEW BILL
+                        <BiPlusCircle />
+                    </span>
+                </a>
+            <div>
+
             </div>
         </div>
     );

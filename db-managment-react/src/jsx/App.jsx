@@ -1,6 +1,14 @@
 import AppNavbar from "./app-navbar.jsx";
 import BillsPage from "./BillsPage.jsx";
 import {useDevLogin} from "../js/hooks/useDevLogin.js";
+import {createBrowserRouter, RouterProvider} from "react-router-dom";
+
+const router = createBrowserRouter([
+    {
+        path:'/bills',
+        element: <BillsPage />
+    },
+]);
 
 function App() {
     const {isLoggingIn, loginError} = useDevLogin();
@@ -16,7 +24,7 @@ function App() {
     return (
         <div className="card table-card shadow-sm p-4">
             <AppNavbar />
-            <BillsPage/>
+            <RouterProvider router={router}/>
         </div>
     );
 }
