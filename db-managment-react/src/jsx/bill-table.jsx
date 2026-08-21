@@ -9,7 +9,7 @@ function BillTable({rows, loading, sortBy, sortOrder, onSort}) {
 
     if (loading) {
         return <p>Loading bills...</p>;
-    } else {console.log("Rows: ",rows);}
+    }
 
 
 
@@ -62,7 +62,10 @@ function BillTable({rows, loading, sortBy, sortOrder, onSort}) {
                         <td>{row.billNumber}</td>
                         <td>{row.customerName + " " + row.customerSurname}</td>
                         <td>{row.sellerName + " " + row.sellerSurname}</td>
-                        <td>{row.cardExpired}</td>
+                        <td>
+                            {row.cardExpired}
+                            {row.cardExpired !== "NOT ON RECORD"? `: ${row.cardDate}` : ""}
+                        </td>
                         <td>{row.comment}</td>
                         <td>
                             <span  style={{ display: "flex", alignItems: "center", gap: "4px" }}>
