@@ -168,8 +168,31 @@ export async function searchBills(page, limit, sortBy, sortOrder, searchString) 
         return {items, totalCount};
     }
 
+    let response = await fetch(`http://localhost:3000/Customer?q=${searchString}`, {
+        method: "GET",
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        }
+    })
 
-    let response = await fetch(`http://localhost:3000/Seller?q=${searchString}`,{
+    const searched_customer_data = await response.json();
+    console.log("searched customer data: ", searched_customer_data);
+
+    for (let customer of searched_customer_data) {
+        if (String(customerId) !== String(customer.id)) {
+            console.log(customer.id,"!==",customerId)
+            continue;
+        }
+        else {console.log(customer.id,"===",customerId)}
+
+        let request = await fetch(`http://localhost:3000/Bill?customerId=${customerId}`);
+        const bill_data = await request.json();
+
+        items.push(...await itemizeBills(bill_data, customer));
+    }
+
+
+    response = await fetch(`http://localhost:3000/Seller?q=${searchString}`,{
         method: "GET",
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('access_token')}`
@@ -200,7 +223,6 @@ export async function searchBills(page, limit, sortBy, sortOrder, searchString) 
                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`
             }
         })
-        console.log("Broken request?",request);
         const bill_data = await request.json();
 
         items.push(...await itemizeBills(bill_data,customer_data));
