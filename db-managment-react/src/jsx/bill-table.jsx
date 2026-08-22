@@ -74,7 +74,14 @@ function BillTable({rows, loading, sortBy, sortOrder, onSort}) {
                             </span>
                         </td>
                         <td>
-                            <TiEye />
+                            <button className={
+                                `btn
+                                ${row.cardExpired === "EXPIRED" ? "btn-danger" : ""}
+                                ${row.cardExpired === "NOT ON RECORD" ? "btn-warning" : ""}
+                                ${row.cardExpired === "VALID" ? "btn-success" : ""}`
+                            }>
+                                <TiEye />
+                            </button>
                         </td>
                     </tr>
                 )))}
