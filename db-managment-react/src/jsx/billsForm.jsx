@@ -110,7 +110,7 @@ export default function BillsForm() {
                         </p>
                     </div>
 
-                    {/* Seller */}
+
                     <div>
                         <label htmlFor="sellerId" className="block text-sm font-medium text-slate-700 mb-1">
                             Seller
@@ -126,15 +126,15 @@ export default function BillsForm() {
                             <option value="" disabled>
                                 {loadingOptions ? "Loading sellers…" : "Select a seller"}
                             </option>
-                            {sellers.map((s) => (
-                                <option key={s.id} value={s.id}>
-                                    {s.name}
+                            {sellers.map((seller) => (
+                                <option key={seller.id} value={seller.id}>
+                                    {formatSellerText(seller)}
                                 </option>
                             ))}
                         </select>
                     </div>
 
-                    {/* Credit card */}
+
                     <div>
                         <label htmlFor="creditCardId" className="block text-sm font-medium text-slate-700 mb-1">
                             Credit card
@@ -150,15 +150,15 @@ export default function BillsForm() {
                             <option value="" disabled>
                                 {loadingOptions ? "Loading credit cards…" : "Select a credit card"}
                             </option>
-                            {creditCards.map((cc) => (
-                                <option key={cc.id} value={cc.id}>
-                                    {formatCreditCardText(cc)}
+                            {creditCards.map((card) => (
+                                <option key={card.id} value={card.id}>
+                                    {formatCreditCardText(card)}
                                 </option>
                             ))}
                         </select>
                     </div>
 
-                    {/* Comment */}
+
                     <div>
                         <label htmlFor="comment" className="block text-sm font-medium text-slate-700 mb-1">
                             Comment
@@ -173,7 +173,7 @@ export default function BillsForm() {
                         />
                     </div>
 
-                    {/* Total */}
+
                     <div>
                         <label htmlFor="total" className="block text-sm font-medium text-slate-700 mb-1">
                             Total
@@ -197,7 +197,7 @@ export default function BillsForm() {
                         disabled={submitting || loadingOptions}
                         className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-medium py-2.5 rounded transition-colors"
                     >
-                        {submitting ? "Adding…" : "Add Invoice"}
+                        {submitting ? "Adding…" : "Add Bill"}
                     </button>
                 </form>
             </div>

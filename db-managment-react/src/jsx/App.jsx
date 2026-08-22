@@ -7,12 +7,9 @@ import BillsForm from "./billsForm.jsx";
 const router = createBrowserRouter([
     {
         path:'/bills',
-        element: <BillsPage />,
         children: [
-            {
-                path:'/new',
-                element: <BillsForm/>
-            }
+            {index: true, element: <BillsPage />},
+            {path:'new', element: <BillsForm/>}
         ]
     },
 ]);
