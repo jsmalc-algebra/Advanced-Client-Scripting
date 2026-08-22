@@ -75,7 +75,7 @@ async function fetchPaginatedBillDataByCustomerId(id,page,limit, sortBy, sortOrd
     return {data, totalCount}
 }
 
-export default async function fetchCustomerDataById(id) {
+export async function fetchCustomerDataById(id) {
     const response = await fetch("http://localhost:3000/Customer/" + id);
     return await response.json();
 }

@@ -1,6 +1,13 @@
 import { useState, useEffect } from "react";
+import {fillBillForeignKeys} from "../js/functions/fillBillForeignKeys.js";
+import {formatCustomerText,formatCreditCardText,formatSellerText} from "../js/utils/billFormatters.js";
+import {addBill} from "../js/functions/addBill.js";
+import {useNavigate} from "react-router-dom";
 
-export default function billsForm() {
+export default function BillsForm() {
+    const navigate = useNavigate();
+    const customerId = new URLSearchParams(window.location.search).get('CustomerId');
+
     const [formData, setFormData] = useState({
         date: "",
         billNumber: "",
@@ -11,22 +18,59 @@ export default function billsForm() {
         total: "",
     });
 
-    const [customers, setCustomers] = useState([]);
+    const [customer, setCustomer] = useState(null);
     const [sellers, setSellers] = useState([]);
     const [creditCards, setCreditCards] = useState([]);
 
-    const [loadingOptions, setLoadingOptions] = useState(true);
     const [submitting, setSubmitting] = useState(false);
+    const [loadingOptions, setLoadingOptions] = useState(true);
 
+
+    useEffect(() => {
+        let cancelled = false;
+
+        fillBillForeignKeys(customerId)
+            .then(({ customer_data, all_seller_data, all_credit_card_data }) => {
+                if (cancelled) return;
+                setCustomer(customer_data);
+                setSellers(all_seller_data);
+                setCreditCards(all_credit_card_data);
+                setFormData(prev => ({ ...prev, customerId: String(customer_data.id) }));
+            })
+            .finally(() => {
+                if (!cancelled) setLoadingOptions(false);
+            });
+
+        return () => { cancelled = true; };
+    }, []);
+
+    function handleChange(field) {
+        return (e) => {
+            setFormData(prev => ({ ...prev, [field]: e.target.value }));
+        };
+    }
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+        setSubmitting(true);
+        try {
+            await addBill(formData);
+            navigate("/bills?id="+customerId);
+        } catch (err) {
+            console.error("Failed to add bill. Please try again.");
+            console.error(err);
+        } finally {
+            setSubmitting(false);
+        }
+    }
 
     return (
             <div className="p-6 sm:p-8">
                 <h3 className="text-xl font-semibold text-center text-slate-800 mb-6">
-                    Add Invoice
+                    Add Bill
                 </h3>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* Date */}
                     <div>
                         <label htmlFor="date" className="block text-sm font-medium text-slate-700 mb-1">
                             Date
@@ -41,7 +85,6 @@ export default function billsForm() {
                         />
                     </div>
 
-                    {/* Bill number */}
                     <div>
                         <label htmlFor="billNumber" className="block text-sm font-medium text-slate-700 mb-1">
                             Bill number
@@ -57,28 +100,14 @@ export default function billsForm() {
                         />
                     </div>
 
-                    {/* Customer */}
+
                     <div>
                         <label htmlFor="customerId" className="block text-sm font-medium text-slate-700 mb-1">
                             Customer
                         </label>
-                        <select
-                            id="customerId"
-                            required
-                            disabled={loadingOptions}
-                            value={formData.customerId}
-                            onChange={handleChange("customerId")}
-                            className="w-full rounded border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-400 disabled:bg-slate-100"
-                        >
-                            <option value="" disabled>
-                                {loadingOptions ? "Loading customers…" : "Select a customer"}
-                            </option>
-                            {customers.map((c) => (
-                                <option key={c.id} value={c.id}>
-                                    {c.name}
-                                </option>
-                            ))}
-                        </select>
+                        <p className="w-full rounded border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-700">
+                            {loadingOptions ? "Loading customer…" : formatCustomerText(customer)}
+                        </p>
                     </div>
 
                     {/* Seller */}
@@ -123,7 +152,7 @@ export default function billsForm() {
                             </option>
                             {creditCards.map((cc) => (
                                 <option key={cc.id} value={cc.id}>
-                                    {cc.label}
+                                    {formatCreditCardText(cc)}
                                 </option>
                             ))}
                         </select>

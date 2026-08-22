@@ -2,11 +2,18 @@ import AppNavbar from "./app-navbar.jsx";
 import BillsPage from "./BillsPage.jsx";
 import {useDevLogin} from "../js/hooks/useDevLogin.js";
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import BillsForm from "./billsForm.jsx";
 
 const router = createBrowserRouter([
     {
         path:'/bills',
-        element: <BillsPage />
+        element: <BillsPage />,
+        children: [
+            {
+                path:'/new',
+                element: <BillsForm/>
+            }
+        ]
     },
 ]);
 
