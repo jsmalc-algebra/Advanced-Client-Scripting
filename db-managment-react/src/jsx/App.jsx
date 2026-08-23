@@ -9,7 +9,8 @@ const router = createBrowserRouter([
         path:'/customers/:customerId/bills',
         children: [
             {index: true, element: <BillsPage />},
-            {path:'new', element: <BillsForm/>}
+            {path:'new', element: <BillsForm isEditMode={false}/>},
+            {path:':id/edit', element: <BillsForm isEditMode={true} />},
         ]
     },
 ]);

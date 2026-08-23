@@ -3,10 +3,12 @@ import {fillBillForeignKeys} from "../js/functions/fillBillForeignKeys.js";
 import {formatCustomerText,formatCreditCardText,formatSellerText} from "../js/utils/billFormatters.js";
 import {addBill} from "../js/functions/addBill.js";
 import {useNavigate, useParams} from "react-router-dom";
+import {getBillById} from "../js/functions/BillEditingRequirements.js";
 
-export default function BillsForm() {
+export default function BillsForm(isEditMode) {
     const navigate = useNavigate();
     const {customerId} = useParams();
+    const {id} = useParams();
 
     const [formData, setFormData] = useState({
         date: "",
@@ -24,6 +26,7 @@ export default function BillsForm() {
 
     const [submitting, setSubmitting] = useState(false);
     const [loadingOptions, setLoadingOptions] = useState(true);
+    const [loadingBill, setLoadingBill] = useState(isEditMode);
 
 
     useEffect(() => {
@@ -44,6 +47,27 @@ export default function BillsForm() {
         return () => { cancelled = true; };
     }, []);
 
+    useEffect(() => {
+        if (isEditMode) {return;}
+
+        let cancelled = false;
+
+       getBillById(id).then((bill) => {
+            if (cancelled) return;
+            setFormData({
+                date: bill.date,
+                billNumber: bill.billNumber,
+                customerId: String(bill.customerId),
+                sellerId: String(bill.sellerId),
+                creditCardId: String(bill.creditCardId ?? ""),
+                comment: bill.comment ?? "",
+                total: String(bill.total),
+            });
+        }) .finally(() => {
+            if (!cancelled) setLoadingBill(false);
+        });
+    }, [isEditMode,id])
+
     function handleChange(field) {
         return (e) => {
             setFormData(prev => ({ ...prev, [field]: e.target.value }));
@@ -54,10 +78,10 @@ export default function BillsForm() {
         event.preventDefault();
         setSubmitting(true);
         try {
-            await addBill(formData);
+            if (!isEditMode) {await addBill(formData);}
             navigate(`/customers/${customerId}/bills`);
         } catch (err) {
-            console.error("Failed to add bill. Please try again.");
+            if (!isEditMode) {console.error("Failed to add bill. Please try again.");}
             console.error(err);
         } finally {
             setSubmitting(false);
@@ -67,7 +91,7 @@ export default function BillsForm() {
     return (
             <div className="p-6 sm:p-8">
                 <h3 className="text-xl font-semibold text-center text-slate-800 mb-6">
-                    Add Bill
+                    {isEditMode ? "Update Bill" : "Add Bill"}
                 </h3>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -197,7 +221,7 @@ export default function BillsForm() {
                         disabled={submitting || loadingOptions}
                         className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-medium py-2.5 rounded transition-colors"
                     >
-                        {submitting ? "Adding…" : "Add Bill"}
+                        {isEditMode ? "Edit Bill" : "Add Bill"}
                     </button>
                 </form>
             </div>

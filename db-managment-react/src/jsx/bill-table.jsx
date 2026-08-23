@@ -1,11 +1,16 @@
 import { FaSort } from "react-icons/fa6";
 import { FaSortDown } from "react-icons/fa";
 import { FaSortUp } from "react-icons/fa";
-import { TiEye } from "react-icons/ti";
+import { FaRegEdit } from "react-icons/fa";
+import { FaRegTrashCan } from "react-icons/fa6";
 import { LiaEuroSignSolid } from "react-icons/lia";
 import "../css/table_page.css"
+import {useNavigate, useParams} from "react-router-dom";
 
 function BillTable({rows, loading, sortBy, sortOrder, onSort}) {
+
+    const navigate = useNavigate();
+    const {customerId} = useParams();
 
     if (loading) {
         return <p>Loading bills...</p>;
@@ -45,7 +50,8 @@ function BillTable({rows, loading, sortBy, sortOrder, onSort}) {
                     <th className="sortable" data-sort="total" onClick={() => onSort('total')}>
                         Total <span className="sort-icon">{sortIcon('total')}</span>
                     </th>
-                    <th>Details</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
                 </tr>
                 </thead>
                 <tbody id="table-body">
@@ -74,13 +80,24 @@ function BillTable({rows, loading, sortBy, sortOrder, onSort}) {
                             </span>
                         </td>
                         <td>
+                            <button
+                                className={
+                                    `btn
+                                    ${row.cardExpired === "EXPIRED" ? "btn-danger" : ""}
+                                    ${row.cardExpired === "NOT ON RECORD" ? "btn-warning" : ""}
+                                    ${row.cardExpired === "VALID" ? "btn-success" : ""}`
+                                }
+                                onClick={() => navigate(`/customers/${customerId}/bills/edit`)}
+                            >
+                                <FaRegEdit />
+                            </button>
                             <button className={
                                 `btn
                                 ${row.cardExpired === "EXPIRED" ? "btn-danger" : ""}
                                 ${row.cardExpired === "NOT ON RECORD" ? "btn-warning" : ""}
                                 ${row.cardExpired === "VALID" ? "btn-success" : ""}`
                             }>
-                                <TiEye />
+                                <FaRegTrashCan />
                             </button>
                         </td>
                     </tr>
