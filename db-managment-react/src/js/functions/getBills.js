@@ -1,4 +1,5 @@
 import Bill from "../classes/Bills.js"
+import {paginateArray} from "./paginateArray.js";
 
 const LOCAL_SORT_FIELDS = ['customer','seller','creditCardStatus']
 
@@ -43,12 +44,6 @@ function sortBillArray(bill_array, sortBy, sortOrder) {
         if (sortOrder === 'desc') {return -result;}
         else {return result;}
     })
-}
-
-function paginateBillArray(bill_array, currentPage, limit) {
-    const start = (currentPage-1) * limit;
-    const end = start + limit;
-    return bill_array.slice(start, end);
 }
 
 async function fetchPaginatedBillDataByCustomerId(id,page,limit, sortBy, sortOrder,searchString) {
@@ -132,7 +127,7 @@ export async function getBills(page, limit, sortBy, sortOrder, searchString,cust
 
     if (sortBy && LOCAL_SORT_FIELDS.includes(sortBy)) {
         items = sortBillArray(items, sortBy, sortOrder);
-        items = paginateBillArray(items, page, limit);
+        items = paginateArray(items, page, limit);
     }
 
     return {items, totalCount};
@@ -255,7 +250,7 @@ export async function searchBills(page, limit, sortBy, sortOrder, searchString, 
         return true;
     })
 
-    items = paginateBillArray(items, page, limit);
+    items = paginateArray(items, page, limit);
 
     return {items, totalCount};
 }

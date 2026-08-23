@@ -4,6 +4,7 @@ export function usePaginatedData(fetchPage, page, limit, sortBy, sortOrder, sear
     const [data, setData] = useState([]);
     const [maxPage, setMaxPage] = useState(1);
     const [loading, setLoading] = useState(true);
+    const [refreshIndex, setRefreshIndex] = useState(0);
 
     useEffect(() => {
         let cancelled = false;
@@ -20,7 +21,9 @@ export function usePaginatedData(fetchPage, page, limit, sortBy, sortOrder, sear
             });
 
         return () => { cancelled = true; };
-    }, [fetchPage, page, limit, sortBy, sortOrder, searchString]);
+    }, [fetchPage, page, limit, sortBy, sortOrder, searchString, refreshIndex]);
 
-    return { data, maxPage, loading };
+    function refetch() {setRefreshIndex(i => i + 1);}
+
+    return { data, maxPage, loading, refetch };
 }
