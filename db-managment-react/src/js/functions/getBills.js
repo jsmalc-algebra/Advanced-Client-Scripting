@@ -1,5 +1,4 @@
 import Bill from "../classes/Bills.js"
-import {useParams} from "react-router-dom";
 
 const LOCAL_SORT_FIELDS = ['customer','seller','creditCardStatus']
 
@@ -101,10 +100,8 @@ async function fetchCreditCardDataById(id) {
     return await response.json();
 }
 
-export async function getBills(page, limit, sortBy, sortOrder, searchString) {
+export async function getBills(page, limit, sortBy, sortOrder, searchString,customerId) {
     console.log("getBills called");
-
-    const {customerId} = useParams();
 
     let bill_data;
     let totalCount;
@@ -141,14 +138,12 @@ export async function getBills(page, limit, sortBy, sortOrder, searchString) {
     return {items, totalCount};
 }
 
-export async function searchBills(page, limit, sortBy, sortOrder, searchString) {
+export async function searchBills(page, limit, sortBy, sortOrder, searchString, customerId) {
     console.log("searchBills called");
 
     let searched_bill_data;
     let full_bill_data;
     let totalCount;
-
-    const {customerId} = useParams();
 
 
     ({data:searched_bill_data,totalCount:totalCount} = await fetchPaginatedBillDataByCustomerId(customerId,page,limit,undefined,undefined,searchString));

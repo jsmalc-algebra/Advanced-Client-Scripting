@@ -4,7 +4,7 @@ import BillTable from "./bill-table.jsx";
 import {useState} from "react";
 import {usePaginatedData} from "../js/hooks/usePaginatedData.js";
 import {getBills, searchBills} from "../js/functions/getBills.js";
-import {FaSortUp} from "react-icons/fa";
+import {useParams} from "react-router-dom";
 
 function BillsPage() {
     const [limit, setLimit] = useState(10);
@@ -15,8 +15,9 @@ function BillsPage() {
     const [searchString, setSearchString] = useState('');
 
     const fetchPage = searchMode ? searchBills : getBills;
+    const {customerId} = useParams();
 
-    const {data:rows, maxPage, loading} = usePaginatedData(fetchPage, currPage, limit, sortBy, sortOrder, searchString);
+    const {data:rows, maxPage, loading} = usePaginatedData(fetchPage, currPage, limit, sortBy, sortOrder, searchString, customerId);
 
 
 

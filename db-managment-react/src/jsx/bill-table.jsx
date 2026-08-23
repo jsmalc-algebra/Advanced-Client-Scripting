@@ -50,8 +50,7 @@ function BillTable({rows, loading, sortBy, sortOrder, onSort}) {
                     <th className="sortable" data-sort="total" onClick={() => onSort('total')}>
                         Total <span className="sort-icon">{sortIcon('total')}</span>
                     </th>
-                    <th>Edit</th>
-                    <th>Delete</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody id="table-body">
@@ -87,7 +86,7 @@ function BillTable({rows, loading, sortBy, sortOrder, onSort}) {
                                     ${row.cardExpired === "NOT ON RECORD" ? "btn-warning" : ""}
                                     ${row.cardExpired === "VALID" ? "btn-success" : ""}`
                                 }
-                                onClick={() => navigate(`/customers/${customerId}/bills/edit`)}
+                                onClick={() => navigate(`/customers/${customerId}/bills/${row.id}/edit`)}
                             >
                                 <FaRegEdit />
                             </button>

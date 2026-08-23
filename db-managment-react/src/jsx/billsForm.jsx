@@ -3,12 +3,12 @@ import {fillBillForeignKeys} from "../js/functions/fillBillForeignKeys.js";
 import {formatCustomerText,formatCreditCardText,formatSellerText} from "../js/utils/billFormatters.js";
 import {addBill} from "../js/functions/addBill.js";
 import {useNavigate, useParams} from "react-router-dom";
-import {getBillById} from "../js/functions/BillEditingRequirements.js";
+import {getBillById, updateBill} from "../js/functions/BillEditingFunctions.js";
 
-export default function BillsForm(isEditMode) {
+export default function BillsForm() {
     const navigate = useNavigate();
-    const {customerId} = useParams();
-    const {id} = useParams();
+    const {customerId, id} = useParams();
+    const isEditMode = Boolean(id);
 
     const [formData, setFormData] = useState({
         date: "",
@@ -48,14 +48,15 @@ export default function BillsForm(isEditMode) {
     }, []);
 
     useEffect(() => {
-        if (isEditMode) {return;}
+        if (!isEditMode) {return;}
 
         let cancelled = false;
 
        getBillById(id).then((bill) => {
-            if (cancelled) return;
+           console.log("Bill gotten via ID: ",bill)
+           if (cancelled) return;
             setFormData({
-                date: bill.date,
+                date: bill.date.split('T')[0],
                 billNumber: bill.billNumber,
                 customerId: String(bill.customerId),
                 sellerId: String(bill.sellerId),
@@ -66,7 +67,9 @@ export default function BillsForm(isEditMode) {
         }) .finally(() => {
             if (!cancelled) setLoadingBill(false);
         });
-    }, [isEditMode,id])
+
+        return () => { cancelled = true;};
+        }, [isEditMode,id])
 
     function handleChange(field) {
         return (e) => {
@@ -79,9 +82,11 @@ export default function BillsForm(isEditMode) {
         setSubmitting(true);
         try {
             if (!isEditMode) {await addBill(formData);}
+            else {await updateBill(formData,id)}
             navigate(`/customers/${customerId}/bills`);
         } catch (err) {
             if (!isEditMode) {console.error("Failed to add bill. Please try again.");}
+            else {console.error("Failed to update bill. Please try again")}
             console.error(err);
         } finally {
             setSubmitting(false);
@@ -173,6 +178,9 @@ export default function BillsForm(isEditMode) {
                         >
                             <option value="" disabled>
                                 {loadingOptions ? "Loading credit cards…" : "Select a credit card"}
+                            </option>
+                            <option value={null}>
+                               null - Leave empty
                             </option>
                             {creditCards.map((card) => (
                                 <option key={card.id} value={card.id}>
