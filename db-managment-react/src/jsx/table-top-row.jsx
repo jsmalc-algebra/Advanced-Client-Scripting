@@ -1,12 +1,12 @@
 import {Button} from "react-bootstrap";
 import {useState} from "react";
 import { BiPlusCircle } from "react-icons/bi";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 function TableTopRow({limit, onLimitChange, onSearch, onClearSearch}) {
     const [searchInput, setSearchInput] = useState('');
     const navigate = useNavigate();
-    const customerId = new URLSearchParams(window.location.search).get('id');
+    const {customerId} = useParams();
 
     function handleSearchClick() {
         onSearch(searchInput);
@@ -53,7 +53,7 @@ function TableTopRow({limit, onLimitChange, onSearch, onClearSearch}) {
                     type={"button"}
                     className="btn btn-primary"
                     style={{display: "flex", alignItems: "center", justifyContent: "center"}}
-                    onClick={() => navigate("/bills/new?CustomerId="+customerId)}
+                    onClick={() => navigate(`/customers/${customerId}/bills/new`)}
                 >
                     <span  style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                         NEW BILL

@@ -6,7 +6,7 @@ import BillsForm from "./billsForm.jsx";
 
 const router = createBrowserRouter([
     {
-        path:'/bills',
+        path:'/customers/:customerId/bills',
         children: [
             {index: true, element: <BillsPage />},
             {path:'new', element: <BillsForm/>}

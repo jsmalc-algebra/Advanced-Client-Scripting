@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import {fillBillForeignKeys} from "../js/functions/fillBillForeignKeys.js";
 import {formatCustomerText,formatCreditCardText,formatSellerText} from "../js/utils/billFormatters.js";
 import {addBill} from "../js/functions/addBill.js";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 export default function BillsForm() {
     const navigate = useNavigate();
-    const customerId = new URLSearchParams(window.location.search).get('CustomerId');
+    const {customerId} = useParams();
 
     const [formData, setFormData] = useState({
         date: "",
@@ -55,7 +55,7 @@ export default function BillsForm() {
         setSubmitting(true);
         try {
             await addBill(formData);
-            navigate("/bills?id="+customerId);
+            navigate(`/customers/${customerId}/bills`);
         } catch (err) {
             console.error("Failed to add bill. Please try again.");
             console.error(err);
