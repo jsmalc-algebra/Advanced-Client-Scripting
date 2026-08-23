@@ -7,7 +7,7 @@ import { LiaEuroSignSolid } from "react-icons/lia";
 import "../css/table_page.css"
 import {useNavigate, useParams} from "react-router-dom";
 
-function BillTable({rows, loading, sortBy, sortOrder, onSort}) {
+function BillTable({rows, loading, sortBy, sortOrder, onSort, onDelete}) {
 
     const navigate = useNavigate();
     const {customerId} = useParams();
@@ -90,12 +90,15 @@ function BillTable({rows, loading, sortBy, sortOrder, onSort}) {
                             >
                                 <FaRegEdit />
                             </button>
-                            <button className={
-                                `btn
-                                ${row.cardExpired === "EXPIRED" ? "btn-danger" : ""}
-                                ${row.cardExpired === "NOT ON RECORD" ? "btn-warning" : ""}
-                                ${row.cardExpired === "VALID" ? "btn-success" : ""}`
-                            }>
+                            <button
+                                className={
+                                    `btn
+                                    ${row.cardExpired === "EXPIRED" ? "btn-danger" : ""}
+                                    ${row.cardExpired === "NOT ON RECORD" ? "btn-warning" : ""}
+                                    ${row.cardExpired === "VALID" ? "btn-success" : ""}`
+                                }
+                                onClick={() => onDelete(row.id)}
+                            >
                                 <FaRegTrashCan />
                             </button>
                         </td>

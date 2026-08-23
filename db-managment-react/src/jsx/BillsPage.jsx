@@ -5,6 +5,7 @@ import {useState} from "react";
 import {usePaginatedData} from "../js/hooks/usePaginatedData.js";
 import {getBills, searchBills} from "../js/functions/getBills.js";
 import {useParams} from "react-router-dom";
+import {deleteBill} from "../js/functions/deleteBill.js";
 
 function BillsPage() {
     const [limit, setLimit] = useState(10);
@@ -17,7 +18,7 @@ function BillsPage() {
     const fetchPage = searchMode ? searchBills : getBills;
     const {customerId} = useParams();
 
-    const {data:rows, maxPage, loading} = usePaginatedData(fetchPage, currPage, limit, sortBy, sortOrder, searchString, customerId);
+    const {data:rows, maxPage, loading,refetch} = usePaginatedData(fetchPage, currPage, limit, sortBy, sortOrder, searchString, customerId);
 
 
 
@@ -45,6 +46,15 @@ function BillsPage() {
         setCurrPage(1);
     }
 
+    async function handleDelete(id) {
+        const confirm = window.confirm("Are you sure you want to delete this bill?");
+        if (!confirm) {return;}
+
+        deleteBill(id)
+            .catch((error) => {console.error(error);});
+        refetch();
+    }
+
     return (
         <>
             <TableTopRow
@@ -62,6 +72,7 @@ function BillsPage() {
                 sortBy={sortBy}
                 sortOrder={sortOrder}
                 onSort={handleSort}
+                onDelete={handleDelete}
             />
             <TablePagination
                 currPage = {currPage}
@@ -72,4 +83,4 @@ function BillsPage() {
     );
 }
 
-export default BillsPage
+export default BillsPage;
