@@ -3,6 +3,7 @@ import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import BillsPage from "../bills/BillsPage.jsx";
 import BillsForm from "../bills/billsForm.jsx";
 import {useDevLogin} from "../../js/hooks/useDevLogin.js";
+import ItemsPage from "../Items/ItemsPage.jsx";
 const router = createBrowserRouter([
     {
         path:'/customers/:customerId/bills',
@@ -12,6 +13,12 @@ const router = createBrowserRouter([
             {path:':id/edit', element: <BillsForm/>},
         ]
     },
+    {
+        path:'/bills/:billId/items',
+        children: [
+            {index: true, element: <ItemsPage/>}
+        ]
+    }
 ]);
 
 function App() {

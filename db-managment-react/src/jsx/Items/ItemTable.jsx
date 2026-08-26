@@ -15,6 +15,8 @@ function ItemTable({rows, loading, sortBy, sortOrder, onSort}) {
         else if (sortOrder === 'desc') {return <FaSortUp/>}
         else {return <FaSortDown/>;}
     }
+
+    return ()
 }
 
 export default ItemTable;

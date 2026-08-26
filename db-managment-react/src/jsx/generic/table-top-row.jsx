@@ -1,12 +1,8 @@
 import {Button} from "react-bootstrap";
 import {useState} from "react";
-import { BiPlusCircle } from "react-icons/bi";
-import {useNavigate, useParams} from "react-router-dom";
 
-function TableTopRow({limit, onLimitChange, onSearch, onClearSearch}) {
+function TableTopRow({limit, onLimitChange, onSearch, onClearSearch, addButton}) {
     const [searchInput, setSearchInput] = useState('');
-    const navigate = useNavigate();
-    const {customerId} = useParams();
 
     function handleSearchClick() {
         onSearch(searchInput);
@@ -49,17 +45,7 @@ function TableTopRow({limit, onLimitChange, onSearch, onClearSearch}) {
             </div>
 
             <div>
-                <button
-                    type={"button"}
-                    className="btn btn-primary"
-                    style={{display: "flex", alignItems: "center", justifyContent: "center"}}
-                    onClick={() => navigate(`/customers/${customerId}/bills/new`)}
-                >
-                    <span  style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                        NEW BILL
-                        <BiPlusCircle />
-                    </span>
-                </button>
+                {addButton}
             </div>
         </div>
     );

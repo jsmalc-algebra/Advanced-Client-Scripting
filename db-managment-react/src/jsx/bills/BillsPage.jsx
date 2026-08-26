@@ -5,6 +5,7 @@ import {getBills, searchBills} from "../../js/functions/getBills.js";
 import {usePaginatedData} from "../../js/hooks/usePaginatedData.js";
 import TablePagination from "../generic/TablePagination.jsx";
 import TableTopRow from "../generic/table-top-row.jsx";
+import {BiPlusCircle} from "react-icons/bi";
 
 
 function BillsPage() {
@@ -65,6 +66,19 @@ function BillsPage() {
                 }}
                 onSearch={handleSearch}
                 onClearSearch={handleClearSearch}
+                addButton={
+                    <button
+                        type={"button"}
+                        className="btn btn-primary"
+                        style={{display: "flex", alignItems: "center", justifyContent: "center"}}
+                        onClick={() => navigate(`/customers/${customerId}/bills/new`)}
+                    >
+                    <span  style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                        NEW BILL
+                        <BiPlusCircle />
+                    </span>
+                    </button>
+                }
             />
             <BillTable
                 rows={rows}
