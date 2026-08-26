@@ -127,3 +127,7 @@ export async function getItems(page,limit,sortBy,sortOrder,searchString,billId) 
 
     return {items,totalCount}
 }
+
+export async function searchItems(){
+    //TODO: Implement
+}
