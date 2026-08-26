@@ -1,11 +1,11 @@
-import TablePagination from "./TablePagination.jsx";
-import TableTopRow from "./table-top-row.jsx";
 import BillTable from "./bill-table.jsx";
 import {useState} from "react";
-import {usePaginatedData} from "../js/hooks/usePaginatedData.js";
-import {getBills, searchBills} from "../js/functions/getBills.js";
 import {useParams} from "react-router-dom";
-import {deleteBill} from "../js/functions/deleteBill.js";
+import {getBills, searchBills} from "../../js/functions/getBills.js";
+import {usePaginatedData} from "../../js/hooks/usePaginatedData.js";
+import TablePagination from "../generic/TablePagination.jsx";
+import TableTopRow from "../generic/table-top-row.jsx";
+
 
 function BillsPage() {
     const [limit, setLimit] = useState(10);

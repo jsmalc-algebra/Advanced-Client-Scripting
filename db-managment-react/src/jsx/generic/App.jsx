@@ -1,9 +1,8 @@
 import AppNavbar from "./app-navbar.jsx";
-import BillsPage from "./BillsPage.jsx";
-import {useDevLogin} from "../js/hooks/useDevLogin.js";
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
-import BillsForm from "./billsForm.jsx";
-
+import BillsPage from "../bills/BillsPage.jsx";
+import BillsForm from "../bills/billsForm.jsx";
+import {useDevLogin} from "../../js/hooks/useDevLogin.js";
 const router = createBrowserRouter([
     {
         path:'/customers/:customerId/bills',

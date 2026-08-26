@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import {fillBillForeignKeys} from "../js/functions/fillBillForeignKeys.js";
-import {formatCustomerText,formatCreditCardText,formatSellerText} from "../js/utils/billFormatters.js";
-import {addBill} from "../js/functions/addBill.js";
 import {useNavigate, useParams} from "react-router-dom";
-import {getBillById, updateBill} from "../js/functions/BillEditingFunctions.js";
+import {fillBillForeignKeys} from "../../js/functions/fillBillForeignKeys.js";
+import {getBillById, updateBill} from "../../js/functions/BillEditingFunctions.js";
+import {addBill} from "../../js/functions/addBill.js";
+import {formatCreditCardText, formatCustomerText, formatSellerText} from "../../js/utils/billFormatters.js";
 
 export default function BillsForm() {
     const navigate = useNavigate();
