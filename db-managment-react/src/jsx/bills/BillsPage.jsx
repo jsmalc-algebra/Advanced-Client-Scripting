@@ -6,6 +6,7 @@ import {usePaginatedData} from "../../js/hooks/usePaginatedData.js";
 import TablePagination from "../generic/TablePagination.jsx";
 import TableTopRow from "../generic/table-top-row.jsx";
 import {BiPlusCircle} from "react-icons/bi";
+import {deleteBill} from "../../js/functions/deleteBill.js";
 
 
 function BillsPage() {

@@ -74,7 +74,7 @@ function ItemTable({rows, loading, sortBy, sortOrder, onSort, onDelete}) {
                         <td>
                             <button
                                 className="btn btn-outline-secondary"
-                                onClick={() => navigate(`/customers/${billId}/bills/${row.id}/edit`)}
+                                onClick={() => navigate(`/bills/${billId}/items/${row.id}/edit`)}
                             >
                                 <FaRegEdit />
                             </button>

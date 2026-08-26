@@ -30,7 +30,7 @@ async function fetchPaginatedItemDataByBillId(id, page,limit, sortBy, sortOrder,
     return {data, totalCount}
 }
 
-async function fetchBIllById(id) {
+export async function fetchBIllById(id) {
     const response = await fetch(`http://localhost:3000/Bill/${id}`, {
         method: "GET",
         headers: {

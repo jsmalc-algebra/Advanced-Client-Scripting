@@ -4,6 +4,7 @@ import BillsPage from "../bills/BillsPage.jsx";
 import BillsForm from "../bills/billsForm.jsx";
 import {useDevLogin} from "../../js/hooks/useDevLogin.js";
 import ItemsPage from "../Items/ItemsPage.jsx";
+import ItemsForm from "../Items/ItemsForm.jsx";
 const router = createBrowserRouter([
     {
         path:'/customers/:customerId/bills',
@@ -16,7 +17,9 @@ const router = createBrowserRouter([
     {
         path:'/bills/:billId/items',
         children: [
-            {index: true, element: <ItemsPage/>}
+            {index: true, element: <ItemsPage/>},
+            {path:'new', element: <ItemsForm/>},
+            {path:':id/edit', element: <ItemsForm/>},
         ]
     }
 ]);
