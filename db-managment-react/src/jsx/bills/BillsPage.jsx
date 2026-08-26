@@ -1,6 +1,6 @@
 import BillTable from "./bill-table.jsx";
 import {useState} from "react";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {getBills, searchBills} from "../../js/functions/getBills.js";
 import {usePaginatedData} from "../../js/hooks/usePaginatedData.js";
 import TablePagination from "../generic/TablePagination.jsx";
@@ -15,8 +15,8 @@ function BillsPage() {
     const [sortOrder, setSortOrder] = useState(null);
     const [searchMode, setSearchMode] = useState(false);
     const [searchString, setSearchString] = useState('');
-
     const fetchPage = searchMode ? searchBills : getBills;
+    const navigate = useNavigate();
     const {customerId} = useParams();
 
     const {data:rows, maxPage, loading,refetch} = usePaginatedData(fetchPage, currPage, limit, sortBy, sortOrder, searchString, customerId);

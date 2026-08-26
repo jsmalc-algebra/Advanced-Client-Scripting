@@ -15,7 +15,7 @@ function ItemsPageContent() {
 
     const fetchPage = searchMode ? searchItems : getItems;
     const { data: rows, maxPage, loading } = usePaginatedData(
-        fetchPage, currPage, limit, sortBy, sortOrder, searchString
+        fetchPage, currPage, limit, sortBy, sortOrder, searchString, billId
     );
 
     function handleSort(field) {
@@ -46,10 +46,10 @@ function ItemsPageContent() {
                         type={"button"}
                         className="btn btn-primary"
                         style={{display: "flex", alignItems: "center", justifyContent: "center"}}
-                        onClick={() => navigate(`/bills/${billId}/items/new`)}
+                        //onClick={() => navigate(`/bills/${billId}/items/new`)}
                     >
                     <span  style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                        NEW BILL
+                        NEW ITEM
                         <BiPlusCircle />
                     </span>
                     </button>
@@ -58,7 +58,6 @@ function ItemsPageContent() {
             <ItemTable
                 rows={rows}
                 loading={loading}
-                sortBy={sortBy}
                 sortOrder={sortOrder}
                 onSort={(field) => dispatch({ type: 'SORT', payload: field })}
             />

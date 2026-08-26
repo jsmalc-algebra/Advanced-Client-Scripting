@@ -1,4 +1,5 @@
-import {getPageNumbers} from "../js/functions/getPageNumbers.js";
+import {getPageNumbers} from "../../js/functions/getPageNumbers.js";
+
 
 function TablePagination({ currPage, maxPage, onPageChange }){
     const pageNumbers = getPageNumbers(currPage, maxPage);

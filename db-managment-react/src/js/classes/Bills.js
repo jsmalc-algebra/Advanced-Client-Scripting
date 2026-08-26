@@ -1,7 +1,6 @@
 export default class Bills {
     constructor(id, date, billNumber,customer_data,seller_data,creditCard_data,comment,total) {
         this.id = id;
-        this.customer_id = customer_data.id;
         this.seller_id = seller_data.id;
         this.card_id = creditCard_data.id;
         this.date = new Date(date).toLocaleDateString("en-GB");

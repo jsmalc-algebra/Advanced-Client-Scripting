@@ -4,7 +4,8 @@ import { FaSortUp } from "react-icons/fa";
 import { FaRegEdit } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { LiaEuroSignSolid } from "react-icons/lia";
-import "../css/table_page.css"
+import { CiShoppingBasket } from "react-icons/ci";
+import "../../table_page.css"
 import {useNavigate, useParams} from "react-router-dom";
 
 function BillTable({rows, loading, sortBy, sortOrder, onSort, onDelete}) {
@@ -100,6 +101,12 @@ function BillTable({rows, loading, sortBy, sortOrder, onSort, onDelete}) {
                                 onClick={() => onDelete(row.id)}
                             >
                                 <FaRegTrashCan />
+                            </button>
+                            <button
+                                className={`btn btn-info`}
+                                onClick={() => navigate(`/bills/${row.id}/items`)}
+                            >
+                                <CiShoppingBasket />
                             </button>
                         </td>
                     </tr>
