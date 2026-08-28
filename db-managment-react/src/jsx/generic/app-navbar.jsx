@@ -15,7 +15,7 @@ function AppNavbar() {
 
                 <Navbar.Collapse id="navbarContent">
                     <Nav className="ms-auto align-items-lg-center gap-lg-2">
-                        <Nav.Link href="/vanilla/html/customers.html" id="home-btn">
+                        <Nav.Link href="/html/customers.html" id="home-btn">
                             Home
                         </Nav.Link>
                         <Nav.Item>

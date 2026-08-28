@@ -22,7 +22,11 @@ const router = createBrowserRouter([
             {path:':id/edit', element: <ItemsForm/>},
         ]
     }
-]);
+],
+    {
+    basename:"/app"
+    }
+);
 
 function App() {
     /* const {isLoggingIn, loginError} = useDevLogin();
@@ -38,7 +42,7 @@ function App() {
     return (
         <div className="card table-card shadow-sm p-4">
             <AppNavbar />
-            <RouterProvider router={router} basename="/app"/>
+            <RouterProvider router={router}/>
         </div>
     );
 }
