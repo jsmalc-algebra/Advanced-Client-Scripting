@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customers</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js" defer></script>
+  <style>
+    body {
+      min-height: 100vh;
+      background-color: #f5f5f5;
+      padding: 2rem 1rem;
+    }
+    .table-card {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    th.sortable {
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+    th.sortable:hover {
+      background-color: #eaeaea;
+    }
+    .sort-icon {
+      font-size: 0.75rem;
+      color: #999;
+    }
+    @media (max-width: 767px) {
+      #table-body, table, thead, tbody, th, td, tr { display: block; }
+      thead tr { position: absolute; top: -9999px; left: -9999px; }
+      tr { margin-bottom: 0.75rem; border: 1px solid #ddd; border-radius: 6px; padding: 0.5rem; }
+      td {
+        display: flex; justify-content: space-between;
+        padding: 0.4rem 0.25rem; border: none;
+      }
+      td::before {
+        content: attr(data-label);
+        font-weight: 600; color: #666;
+      }
+    }
+  </style>
+  <script type="module" src="../js/page_scripts/customers.js" defer></script>
+  <script type="module" src="../js/reusable-functions.js" defer></script>
+  <script type="module" src="../js/page_scripts/navbar_functions.js" defer></script>
+</head>
+<body>
+
+  <div class="card table-card shadow-sm p-4">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary bg-gradient">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">DB managment app</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+            <li class="nav-item">
+              <a class="nav-link" href="customers.html" id="home-btn">Home</a>
+            </li>
+            <li class="nav-item">
+              <span id="user-display">User: Guest</span>
+            </li>
+            <li class="nav-item">
+              <button class="btn btn-danger" id="logout-btn" type="button">Logout</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <h3 class="mb-4">Customers</h3>
+
+    <div class="row g-2 align-items-end mb-4" id="top-row">
+
+      <div class="col-12 col-md-4">
+        <label for="searchInput" class="form-label small text-muted mb-1">Search</label>
+        <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="Name, email, city...">
+        <button type="button" id="search-button" class="btn btn-info btn-sm">Search</button>
+        <button type="button" id="clear-button" class="btn btn-warning btn-sm">Clear</button>
+      </div>
+
+      <div class="col-6 col-md-3 ms-md-auto">
+        <label for="pageSize" class="form-label small text-muted mb-1">Rows per page</label>
+        <select id="pageSize" class="form-select form-select-sm">
+          <option value="10" selected>10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light" id="sorting-head">
+          <tr id="table-head-row">
+            <th class="sortable" data-sort="name">Name <span class="sort-icon">↕</span></th>
+            <th class="sortable" data-sort="surname">Last Name <span class="sort-icon">↕</span></th>
+            <th class="sortable" data-sort="email">Email <span class="sort-icon">↕</span></th>
+            <th class="sortable" data-sort="telephone">Phone <span class="sort-icon">↕</span></th>
+            <th class="sortable" data-sort="city">City <span class="sort-icon">↕</span></th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <nav aria-label="Users pagination">
+        <ul class="pagination pagination-sm mb-0" id="pagination">
+        </ul>
+      </nav>
+    </div>
+  </div>
+</body>
+</html>

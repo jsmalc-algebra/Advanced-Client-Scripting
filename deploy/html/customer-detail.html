@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Details</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js" defer></script>
+  <style>
+    body {
+      min-height: 100vh;
+      background-color: #f5f5f5;
+      padding: 2rem 1rem;
+    }
+    .detail-card {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.6rem 0.25rem;
+      border-bottom: 1px solid #eee;
+    }
+    .detail-row:last-of-type {
+      border-bottom: none;
+    }
+    .detail-label {
+      font-weight: 600;
+      color: #666;
+    }
+    .detail-value {
+      text-align: right;
+    }
+  </style>
+  <script type="module" src="../js/page_scripts/customer_details.js" defer></script>
+  <script type="module" src="../js/page_scripts/navbar_functions.js" defer></script>
+  <script type="module" src="../js/reusable-functions.js" defer></script>
+</head>
+<body>
+
+  <div class="card detail-card shadow-sm p-4">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary bg-gradient">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">DB managment app</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+            <li class="nav-item">
+              <a class="nav-link" href="customers.html" id="home-btn">Home</a>
+            </li>
+            <li class="nav-item">
+              <span id="user-display">User: Guest</span>
+            </li>
+            <li class="nav-item">
+              <button class="btn btn-danger" id="logout-btn" type="button">Logout</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <h3 class="my-4 text-center" id="customerFullName">Customer Details</h3>
+
+    <div id="customerDetails">
+      <div class="detail-row">
+        <span class="detail-label">Name</span>
+        <span class="detail-value" id="detail-name"></span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Last Name</span>
+        <span class="detail-value" id="detail-surname"></span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Email</span>
+        <span class="detail-value" id="detail-email"></span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Phone</span>
+        <span class="detail-value" id="detail-telephone"></span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">City</span>
+        <span class="detail-value" id="detail-city"></span>
+      </div>
+    </div>
+
+    <hr class="my-4">
+
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end" id="button-links">
+
+    </div>
+
+  </div>
+
+</body>
+</html>
