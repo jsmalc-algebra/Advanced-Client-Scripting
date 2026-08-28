@@ -25,7 +25,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-    const {isLoggingIn, loginError} = useDevLogin();
+    /* const {isLoggingIn, loginError} = useDevLogin();
 
     if (isLoggingIn) {
         return (
@@ -33,7 +33,7 @@ function App() {
                 <p>Logging in...</p>
             </div>
         );
-    }
+    }*/
 
     return (
         <div className="card table-card shadow-sm p-4">
